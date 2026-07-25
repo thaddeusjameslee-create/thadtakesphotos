@@ -1,0 +1,20 @@
+# Cloudflare deploy config.
+#
+# `name` MUST stay exactly as it is. It's the Worker you already created in the
+# dashboard, and it's what your custom domains are attached to. Change it and
+# `wrangler deploy` will quietly create a SECOND Worker, leaving
+# thadtakesphotos.com still pointing at the old one — a genuinely confusing
+# half hour. The ugly auto-generated name is only ever visible to you.
+
+name = "black-butterfly-1273"
+compatibility_date = "2026-07-25"
+
+# No `main` entry: this is a static site, so there's no Worker code to run.
+# Cloudflare serves the files directly.
+#
+# Everything that should be public lives in public/. Everything that shouldn't
+# — this file, the README, .git — sits outside it and therefore cannot be
+# uploaded by accident. That's a structural guarantee rather than a filter
+# rule that has to be trusted.
+[assets]
+directory = "./public"

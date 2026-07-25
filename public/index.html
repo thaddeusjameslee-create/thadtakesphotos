@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thad Takes Photos — Senior Portrait Photography</title>
+<meta name="description" content="Senior portrait photography that actually looks like you. Natural light, real locations, zero awkward posing. Booking now.">
+<link rel="canonical" href="https://thadtakesphotos.com/">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://thadtakesphotos.com/">
+<meta property="og:title" content="Thad Takes Photos — Senior Portrait Photography">
+<meta property="og:description" content="Senior portraits that actually look like you. Natural light, real locations, zero awkward posing.">
+<meta property="og:image" content="https://thadtakesphotos.com/photos/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<!-- Scroll-reveal hides elements until they animate in. Gate that on JS being
+     alive, so the page is never blank for a crawler or a no-script browser. -->
+<script>document.documentElement.classList.add("js");</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "Thad Takes Photos",
+  "description": "Senior portrait photography.",
+  "url": "https://thadtakesphotos.com",
+  "image": "https://thadtakesphotos.com/photos/og.jpg",
+  "priceRange": "$$",
+  "areaServed": "EDIT_YOUR_CITY_HERE"
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#work">Skip to gallery</a>
+
+<header class="nav nav--top" id="nav">
+  <div class="nav__inner">
+    <a class="nav__brand" href="#top">thad<span>takes</span>photos</a>
+    <nav class="nav__links" aria-label="Main">
+      <a href="#work">Work</a>
+      <a href="#packages">Packages</a>
+      <a href="#about">About</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn btn--sm" href="#book">Book a session</a>
+    </nav>
+    <button class="nav__toggle" aria-expanded="false" aria-controls="nav-mobile" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <nav class="nav__mobile" id="nav-mobile" aria-label="Mobile" hidden>
+    <a href="#work">Work</a>
+    <a href="#packages">Packages</a>
+    <a href="#about">About</a>
+    <a href="#faq">FAQ</a>
+    <a href="#book">Book a session</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- ── HERO ───────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero__media" data-photo="photos/hero.jpg" role="img" aria-label="Senior portrait session"></div>
+    <div class="hero__scrim"></div>
+    <div class="hero__content reveal">
+      <p class="eyebrow">Class of 2027 · Booking now</p>
+      <h1>Senior photos that<br><em>actually</em> look like you.</h1>
+      <p class="hero__sub">Real locations, natural light, and none of that stiff hand-on-the-tree-trunk energy. One hour, a couple hundred frames, and a gallery you'll still like in ten years.</p>
+      <div class="hero__cta">
+        <a class="btn" href="#book">Book a session</a>
+        <a class="btn btn--ghost" href="#work">See the work</a>
+      </div>
+    </div>
+    <a class="hero__scroll" href="#work" aria-label="Scroll to gallery"><span></span></a>
+  </section>
+
+  <!-- ── MARQUEE ────────────────────────────────────────── -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span>golden hour</span><i>·</i><span>downtown</span><i>·</i><span>cap &amp; gown</span><i>·</i><span>letterman jackets</span><i>·</i><span>the field at sunset</span><i>·</i><span>outfit changes</span><i>·</i>
+      <span>golden hour</span><i>·</i><span>downtown</span><i>·</i><span>cap &amp; gown</span><i>·</i><span>letterman jackets</span><i>·</i><span>the field at sunset</span><i>·</i><span>outfit changes</span><i>·</i>
+    </div>
+  </div>
+
+  <!-- ── WORK ───────────────────────────────────────────── -->
+  <section class="section" id="work">
+    <div class="section__head reveal">
+      <p class="eyebrow">Selected work</p>
+      <h2>The gallery</h2>
+      <p class="lede">A few favorites from recent sessions. Click any photo to open it full size.</p>
+    </div>
+
+    <div class="filters reveal" role="tablist" aria-label="Filter gallery">
+      <button class="filter is-active" role="tab" aria-selected="true" data-filter="all">All</button>
+      <button class="filter" role="tab" aria-selected="false" data-filter="outdoor">Outdoor</button>
+      <button class="filter" role="tab" aria-selected="false" data-filter="urban">Urban</button>
+      <button class="filter" role="tab" aria-selected="false" data-filter="sports">Sports</button>
+      <button class="filter" role="tab" aria-selected="false" data-filter="studio">Studio</button>
+      <button class="filter filter--view" id="view-toggle" aria-pressed="true" hidden>Grid view</button>
+    </div>
+
+    <div class="gallery" id="gallery"><!-- built by js/main.js from the PHOTOS list --></div>
+  </section>
+
+  <!-- ── 3D STRIP ───────────────────────────────────────────
+       Progressive enhancement: stays hidden unless the browser
+       can run it. The grid above is the real, accessible copy. -->
+  <section class="gl" id="gl-section" hidden>
+    <div class="gl__sticky">
+      <canvas class="gl__canvas" id="gl-canvas"></canvas>
+      <p class="gl__caption" id="gl-caption" aria-hidden="true"></p>
+      <p class="gl__hint">Scroll to travel · drag to spin · click to open</p>
+    </div>
+  </section>
+
+  <!-- ── PACKAGES ───────────────────────────────────────── -->
+  <section class="section section--alt" id="packages">
+    <div class="section__head reveal">
+      <p class="eyebrow">Pricing</p>
+      <h2>Packages</h2>
+      <p class="lede">Every package includes full editing and a private online gallery with print rights. No hidden per-photo fees, ever.</p>
+    </div>
+
+    <div class="cards">
+      <article class="card reveal">
+        <h3>The Quick One</h3>
+        <p class="card__price"><span>$</span>175</p>
+        <p class="card__blurb">Perfect if you just need a great yearbook photo and a couple for grandma.</p>
+        <ul>
+          <li>45 minutes</li>
+          <li>1 location · 1 outfit</li>
+          <li>15+ edited photos</li>
+          <li>Private online gallery</li>
+          <li>Yearbook-ready crop included</li>
+        </ul>
+        <a class="btn btn--ghost btn--block" href="#book">Book this</a>
+      </article>
+
+      <article class="card card--featured reveal">
+        <span class="card__tag">Most booked</span>
+        <h3>The Signature</h3>
+        <p class="card__price"><span>$</span>325</p>
+        <p class="card__blurb">The one almost everybody picks. Enough time to relax and actually have fun with it.</p>
+        <ul>
+          <li>90 minutes</li>
+          <li>2 locations · 3 outfits</li>
+          <li>50+ edited photos</li>
+          <li>Private online gallery</li>
+          <li>Sneak peek within 48 hours</li>
+          <li>5 printed 4×6s</li>
+        </ul>
+        <a class="btn btn--block" href="#book">Book this</a>
+      </article>
+
+      <article class="card reveal">
+        <h3>The Whole Year</h3>
+        <p class="card__price"><span>$</span>525</p>
+        <p class="card__blurb">Two shoots across two seasons — because you in October and you in May are different people.</p>
+        <ul>
+          <li>Two 90-minute sessions</li>
+          <li>Unlimited locations &amp; outfits</li>
+          <li>100+ edited photos</li>
+          <li>Cap &amp; gown session included</li>
+          <li>Graduation announcement design</li>
+          <li>One 16×20 print</li>
+        </ul>
+        <a class="btn btn--ghost btn--block" href="#book">Book this</a>
+      </article>
+    </div>
+
+    <p class="fineprint reveal">Add-ons: extra location <b>+$50</b> · cap &amp; gown mini <b>+$95</b> · friend or sibling in frame <b>+$40</b> · rush 48-hour delivery <b>+$75</b>. Travel is free within 25 miles.</p>
+  </section>
+
+  <!-- ── ABOUT ──────────────────────────────────────────── -->
+  <section class="section" id="about">
+    <div class="about">
+      <div class="about__photo reveal" data-photo="photos/about.jpg" role="img" aria-label="Thad"></div>
+      <div class="about__text reveal">
+        <!-- HEADS UP: this is placeholder copy in a guessed voice, and it makes
+             three claims about you that I invented and cannot check — how long
+             you've been shooting, that senior portraits are your favorite work,
+             and what gear you use. Rewrite in your own words before you share
+             the link, and make sure the camera sentence matches what you own. -->
+        <p class="eyebrow">About</p>
+        <h2>Hey — I'm Thad.</h2>
+        <p>I've been shooting for years, and senior portraits are far and away my favorite thing to do. It's a weirdly big moment: the last real photos of you before everything changes. That deserves better than a folding chair in a rented studio.</p>
+        <p>My whole approach is to make the hour feel less like a photo shoot and more like hanging out with a friend who happens to be holding a camera. I'll direct you — you don't need to know what to do with your hands — but I'm mostly waiting for the in-between moments. Those are always the keepers.</p>
+        <p>Shot on a full-frame mirrorless with fast primes, edited by hand, one at a time. No presets slapped on a whole gallery.</p>
+        <!-- These two are promises you're making, so they're yours to set —
+             adjust them to turnaround times you can actually hit. A session
+             count used to sit here; I removed it rather than leave a number
+             I made up. Add it back once it's a real figure. -->
+        <ul class="stats">
+          <li><b>48hr</b><span>sneak peek</span></li>
+          <li><b>2wk</b><span>full gallery</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TESTIMONIALS ─────────────────────────────────────
+       Switched off until you have real quotes. The three that were
+       here were written by me to show the layout — they were not
+       from real clients, so they can't go on a live site.
+
+       To turn it back on: delete this comment's opening line above
+       and the closing line below, then swap in genuine quotes. Ask
+       clients for a sentence or two after you deliver their gallery;
+       most say yes, and one real line beats three invented ones.
+
+  <section class="section section--alt">
+    <div class="section__head reveal">
+      <p class="eyebrow">Kind words</p>
+      <h2>What people say</h2>
+    </div>
+    <div class="quotes">
+      <figure class="quote reveal">
+        <blockquote>Their words here.</blockquote>
+        <figcaption>First name, last initial <span>Class of 2027</span></figcaption>
+      </figure>
+      <figure class="quote reveal">
+        <blockquote>Their words here.</blockquote>
+        <figcaption>First name, last initial <span>Parent</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  ─────────────────────────────────────────────────────── -->
+
+  <!-- ── FAQ ────────────────────────────────────────────── -->
+  <section class="section section--alt" id="faq">
+    <div class="section__head reveal">
+      <p class="eyebrow">Questions</p>
+      <h2>Good to know</h2>
+    </div>
+    <div class="faq">
+      <details class="reveal">
+        <summary>When should I book?</summary>
+        <p>Summer before senior year is ideal — late June through September fills up first. But honestly, any season works, and spring sessions get you flowers and green everywhere. If you need photos for a yearbook deadline, book at least six weeks ahead.</p>
+      </details>
+      <details class="reveal">
+        <summary>What should I wear?</summary>
+        <p>Bring more than you think you need. Once you book, I'll send a full guide with color palettes that photograph well, what to avoid (tiny patterns, big logos), and a checklist. Rule of thumb: one outfit that's really <em>you</em>, one that's dressed up, one that's comfortable.</p>
+      </details>
+      <details class="reveal">
+        <summary>What if it rains?</summary>
+        <p>We reschedule, free, no drama. I'll usually reach out the day before if the forecast looks bad. Overcast, though? That's the best light there is — we're still shooting.</p>
+      </details>
+      <details class="reveal">
+        <summary>How do I get my photos?</summary>
+        <p>A private online gallery you can download from at full resolution, plus print rights so you can order prints anywhere you like. Sneak peek in 48 hours, full gallery within two weeks.</p>
+      </details>
+      <details class="reveal">
+        <summary>Can my friend / dog / car be in the photos?</summary>
+        <p>Yes, yes, and absolutely yes. Cars and dogs are free. Bring the letterman jacket, the instrument, the jersey, the whole thing — the props are what make the photos yours.</p>
+      </details>
+      <details class="reveal">
+        <summary>How do I lock in a date?</summary>
+        <p>A $50 deposit holds your spot and comes off the final total. The rest is due the day of the session.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- ── BOOK ───────────────────────────────────────────── -->
+  <section class="section section--book" id="book">
+    <div class="book">
+      <div class="book__intro reveal">
+        <p class="eyebrow">Let's do it</p>
+        <h2>Book a session</h2>
+        <p class="lede">Tell me a little about what you're after and I'll get back to you within a day with open dates.</p>
+        <ul class="book__contact">
+          <li><a href="mailto:hello@thadtakesphotos.com">hello@thadtakesphotos.com</a></li>
+          <li><a href="https://instagram.com/thadtakesphotos" rel="noopener">@thadtakesphotos</a></li>
+        </ul>
+      </div>
+
+      <!-- TODO: replace action with your real Formspree endpoint — see README -->
+      <form class="form reveal" id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <div class="field">
+          <label for="name">Your name</label>
+          <input id="name" name="name" type="text" required autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="package">Package you're interested in</label>
+          <select id="package" name="package">
+            <option>The Quick One — $175</option>
+            <option selected>The Signature — $325</option>
+            <option>The Whole Year — $525</option>
+            <option>Not sure yet</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="when">Rough timing</label>
+          <input id="when" name="when" type="text" placeholder="e.g. sometime in September">
+        </div>
+        <div class="field field--full">
+          <label for="message">Anything else?</label>
+          <textarea id="message" name="message" rows="4" placeholder="Locations you love, ideas you've saved, the dog's name…"></textarea>
+        </div>
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp">
+        <button class="btn btn--block" type="submit">Send it</button>
+        <p class="form__status" id="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <a class="nav__brand" href="#top">thad<span>takes</span>photos</a>
+    <nav aria-label="Footer">
+      <a href="#work">Work</a>
+      <a href="#packages">Packages</a>
+      <a href="#about">About</a>
+      <a href="#book">Book</a>
+      <a href="https://instagram.com/thadtakesphotos" rel="noopener">Instagram</a>
+    </nav>
+    <p class="footer__legal">© <span id="year">2026</span> Thad Takes Photos · All photographs are mine, please don't repost without asking.</p>
+  </div>
+</footer>
+
+<!-- ── LIGHTBOX ─────────────────────────────────────────── -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
+  <button class="lightbox__close" aria-label="Close">&times;</button>
+  <button class="lightbox__nav lightbox__nav--prev" aria-label="Previous photo">&#8249;</button>
+  <figure class="lightbox__stage">
+    <img id="lightbox-img" alt="">
+    <figcaption id="lightbox-cap"></figcaption>
+  </figure>
+  <button class="lightbox__nav lightbox__nav--next" aria-label="Next photo">&#8250;</button>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+node_modules/
+.wrangler/
+
+# Windows / editor noise
+Thumbs.db
+desktop.ini
+.DS_Store
+*.log
+
+# Never commit Cloudflare credentials
+.dev.vars
+.env

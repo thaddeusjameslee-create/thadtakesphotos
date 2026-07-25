@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "thadtakesphotos",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--yes", "serve", "--listen", "4321", "--no-clipboard", "public"],
+      "port": 4321
+    }
+  ]
+}

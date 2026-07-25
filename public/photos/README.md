@@ -1,0 +1,28 @@
+# Drop your photos in this folder
+
+Filenames the site is looking for:
+
+| File | Where it shows up |
+|------|-------------------|
+| `hero.jpg` | Full-screen background image at the very top. Use a wide, horizontal shot with empty space on the **left** — the headline sits there. |
+| `about.jpg` | Vertical photo of you in the About section (4:5 works best). |
+| `og.jpg` | The thumbnail that appears when someone texts or posts the link. 1200×630, horizontal. |
+| `01.jpg` … `12.jpg` | The gallery grid. |
+
+Nothing breaks if a file is missing — you just get a warm gradient placeholder
+instead. Add them whenever you're ready.
+
+## Before you upload
+
+Export at **2000px on the long edge, JPEG quality 80**. Straight-off-the-camera
+files are 8–15 MB each and will make the site crawl on a phone. 2000px still
+looks sharp on a laptop and lands around 400 KB.
+
+Better still, save as `.webp` — roughly 30% smaller at the same quality. If you
+do, update the file extensions in `js/main.js`.
+
+## Adding or reordering gallery photos
+
+Open `js/main.js` and edit the `PHOTOS` list at the top. Each line is one photo.
+The `tag` controls which filter button it appears under, and the order in that
+list is the order on the page.
