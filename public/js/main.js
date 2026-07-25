@@ -13,18 +13,13 @@
              the image loads, so eyeballing it is fine.
 ------------------------------------------------------------ */
 const PHOTOS = [
-  { src: "photos/01.jpg", alt: "Golden hour in the tall grass",        tag: "outdoor", ratio: 125 },
-  { src: "photos/02.jpg", alt: "Downtown brick wall, leather jacket",  tag: "urban",   ratio: 75  },
-  { src: "photos/03.jpg", alt: "Under the bleachers, jersey on",       tag: "sports",  ratio: 125 },
-  { src: "photos/04.jpg", alt: "Studio portrait, warm key light",      tag: "studio",  ratio: 100 },
-  { src: "photos/05.jpg", alt: "Sitting on the tailgate at sunset",    tag: "outdoor", ratio: 75  },
-  { src: "photos/06.jpg", alt: "Fire escape, city behind",             tag: "urban",   ratio: 140 },
-  { src: "photos/07.jpg", alt: "Laughing between takes",               tag: "outdoor", ratio: 100 },
-  { src: "photos/08.jpg", alt: "Cleats and a ball, field lights on",   tag: "sports",  ratio: 125 },
-  { src: "photos/09.jpg", alt: "Black backdrop, cap and gown",         tag: "studio",  ratio: 125 },
-  { src: "photos/10.jpg", alt: "Walking the crosswalk downtown",       tag: "urban",   ratio: 75  },
-  { src: "photos/11.jpg", alt: "Wildflowers, late spring",             tag: "outdoor", ratio: 125 },
-  { src: "photos/12.jpg", alt: "Trumpet in hand, band room window",    tag: "studio",  ratio: 100 },
+  // Empty on purpose — the previous entries described photos that didn't exist.
+  // Add a line per photo and the grid, the lightbox and the 3D strip all wake
+  // up on their own. Example of the shape:
+  //
+  //   { src: "photos/01.jpg", alt: "What's happening in the photo", ratio: 125 },
+  //
+  // `tag` is optional and only matters if you add filter buttons back.
 ];
 
 const $  = (sel, root = document) => root.querySelector(sel);
@@ -63,6 +58,14 @@ PHOTOS.forEach((photo, i) => {
   tile.addEventListener("click", () => openLightbox(i));
   gallery.append(tile);
 });
+
+// No photos yet — say so plainly rather than leaving a blank gap.
+if (PHOTOS.length === 0) {
+  const empty = document.createElement("p");
+  empty.className = "gallery__empty";
+  empty.textContent = "Photographs coming soon.";
+  gallery.append(empty);
+}
 
 /* ── Filters ─────────────────────────────────────────────── */
 $$(".filter").forEach(btn => {
@@ -252,6 +255,8 @@ $("#year").textContent = new Date().getFullYear();
    content; the strip only appears if the device can drive it.
 ------------------------------------------------------------ */
 function canRun3D() {
+  // Nothing to put on the strip yet.
+  if (PHOTOS.length === 0) return false;
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
   // Bail on low-end hardware rather than hand someone a 12fps slideshow.
   if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2) return false;

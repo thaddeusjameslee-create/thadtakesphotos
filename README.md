@@ -84,27 +84,27 @@ A static site can't send email on its own, so the form posts to
 Until you do that, the form shows a "not connected yet" message instead of
 silently failing.
 
-### 4. Replace the placeholder text
+### 4. Add real content
 
-Search `index.html` for these and make them real:
+The page has been stripped back to only what's true: the name, the fact that
+it's senior portrait photography, an empty gallery, and a contact form. Every
+invented placeholder is gone.
 
-- `hello@thadtakesphotos.com` — appears 3× (contact list, form fallback, footer area)
-- `instagram.com/thadtakesphotos` — appears 2×
-- `EDIT_YOUR_CITY_HERE` in the JSON-LD block near the top — your city/region, which
-  is what gets you into "senior photographer near me" searches
-- `Class of 2027` in the hero
-- Prices and package contents in the Packages section
-- The About section — that's my guess at your voice, rewrite it in yours. It
-  asserts three things I invented and can't verify: how long you've been
-  shooting, that senior portraits are your favourite work, and what camera you
-  use. There's a comment in the markup flagging it.
+Removed, and worth adding back once each one is real:
 
-**Already removed for you:** the three testimonials and the "200+ sessions"
-figure were mine, not real, so they're off the live page. The testimonials
-markup is still in `index.html` as a commented-out block with a two-quote
-template — uncomment it and fill in genuine quotes when you have them. Ask
-clients for a line or two right after you send their gallery; that's when
-they're most enthusiastic, and most say yes.
+| Section | What it needs from you |
+|---|---|
+| Packages | Your actual prices and what's included |
+| About | Your bio, in your words |
+| FAQ | Your real policies — booking lead time, rain, turnaround, deposit |
+| Testimonials | Genuine client quotes. Ask right after you deliver a gallery |
+| Hero tagline | A line that sounds like you |
+| Instagram / email | Real handle and inbox |
+| `areaServed` in the JSON-LD | Your city — this is what drives "senior photographer near me" |
+
+**Nothing is lost.** All of it is in git — `git show f92cd47:public/index.html`
+prints the previous full version, and you can copy any section straight out of
+it. Restore by pasting it back and editing the text to be true.
 
 ### 5. Deploy
 
