@@ -4,13 +4,22 @@ Static site — plain HTML, CSS, and JavaScript. No build step, no dependencies,
 no framework. Open `index.html` in a browser and it just works.
 
 ```
-index.html          all the page copy lives here
-css/styles.css      all the styling
-js/main.js          gallery list + interactions
-js/gallery3d.js     the scroll-driven 3D photo strip
-js/vendor/          Three.js, vendored so the site depends on nobody
-photos/             your images (see photos/README.md)
+public/                     ← everything in here is public, nothing else is
+  index.html                all the page copy lives here
+  css/styles.css            all the styling
+  js/main.js                gallery list + interactions
+  js/gallery3d.js           the scroll-driven 3D photo strip
+  js/vendor/                Three.js, vendored so the site depends on nobody
+  photos/                   your images (see public/photos/README.md)
+  _headers                  cache + security headers
+
+wrangler.toml               deploy config — read the warning in it
+README.md                   this file
 ```
+
+The `public/` split isn't decoration. Only that folder is uploaded, so this
+README, the deploy config, and your git history physically cannot end up on
+the web — no filter rule to get wrong.
 
 ## The 3D gallery
 
@@ -98,28 +107,47 @@ they're most enthusiastic, and most say yes.
 
 ### 5. Deploy
 
-**Cloudflare Pages, drag-and-drop (easiest):**
+The site is already live at <https://thadtakesphotos.com>, served by a Cloudflare
+Worker named `black-butterfly-1273`. Three ways to update it, in order of how
+little thinking they require.
 
-1. <https://dash.cloudflare.com> → Workers & Pages → Create → Pages → Upload assets
-2. Drag this whole folder in.
-3. Custom domains → Set up a domain → `thadtakesphotos.com`. If the domain is
-   registered at Cloudflare, DNS is automatic and HTTPS turns on by itself.
-
-**Or from GitHub, so pushing updates the site:**
+**a) One command (set up, works now):**
 
 ```bash
-git init && git add -A && git commit -m "Initial site"
+npx wrangler deploy
 ```
 
-Push to a GitHub repo, then in Pages choose "Connect to Git". Build command:
-leave empty. Build output directory: `/`.
+Run it from this folder. First time it opens a browser to log in to Cloudflare;
+after that it's instant. It reads `wrangler.toml`, uploads `public/`, and
+replaces the live site. Roughly ten seconds.
+
+**b) Push to deploy (the automatic one):**
+
+Once this repo is on GitHub, connect it in the dashboard:
+
+> Your Worker → **Settings** → **Build** → **Connect** → pick the repo
+
+Set **deploy command** to `npx wrangler deploy` and leave the build command
+empty — there's nothing to build. From then on every `git push` to `main`
+redeploys by itself, and each push shows up in the Deployments tab.
+
+**c) Drag-and-drop:** still works — **New deployment** in the dashboard — but
+drag the **`public/` folder**, not the project root. Dragging the root would
+publish `wrangler.toml` and this README.
+
+### Rolling back
+
+Every deploy is kept. Worker → **Deployments** → find a known-good one →
+**Rollback**. Takes seconds and doesn't need your local files to be in any
+particular state, which is the real reason to deploy early and often.
 
 ---
 
 ## Working on it locally
 
 ```bash
-npx --yes serve --listen 4321
+npx --yes serve --listen 4321 public
 ```
 
-Then open <http://localhost:4321>. Any editor will do — it's just three files.
+Then open <http://localhost:4321>. Note the `public` on the end — serving the
+project root instead would give you a file listing rather than the site.
