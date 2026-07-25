@@ -10,10 +10,11 @@ public/                     ← everything in here is public, nothing else is
   js/main.js                gallery list + interactions
   js/gallery3d.js           the scroll-driven 3D photo strip
   js/vendor/                Three.js, vendored so the site depends on nobody
-  photos/                   your images (see public/photos/README.md)
+  photos/                   your images (see PHOTOS.md)
   _headers                  cache + security headers
 
 wrangler.toml               deploy config — read the warning in it
+PHOTOS.md                   naming + export guide for your photos
 README.md                   this file
 ```
 
@@ -68,7 +69,7 @@ Cloudflare afterward.
 
 ### 2. Add your photos
 
-See [`photos/README.md`](photos/README.md). The site renders fine without them,
+See [`PHOTOS.md`](PHOTOS.md). The site renders fine without them,
 so you can deploy first and add photos as you shoot.
 
 ### 3. Connect the contact form

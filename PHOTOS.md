@@ -1,4 +1,9 @@
-# Drop your photos in this folder
+# Photos
+
+Drop your image files into **`public/photos/`**.
+
+This guide lives outside `public/` on purpose — anything inside that folder gets
+served on the live site, and notes to yourself shouldn't be.
 
 Filenames the site is looking for:
 
@@ -23,6 +28,6 @@ do, update the file extensions in `js/main.js`.
 
 ## Adding or reordering gallery photos
 
-Open `js/main.js` and edit the `PHOTOS` list at the top. Each line is one photo.
+Open `public/js/main.js` and edit the `PHOTOS` list at the top. Each line is one photo.
 The `tag` controls which filter button it appears under, and the order in that
 list is the order on the page.
