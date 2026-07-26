@@ -13,10 +13,15 @@ Filenames the site is looking for:
 | `about.jpg` | Vertical photo of you in the About section (4:5 works best). |
 | `og.jpg` | The thumbnail that appears when someone texts or posts the link. 1200×630, horizontal. |
 | `01.jpg`, `02.jpg`, … | The gallery. As many as you list in `PHOTOS`. |
+| `portrait-01.jpg` … `portrait-03.jpg` | The three panels orbiting the camera near the top. **Vertical crops** — they're shown at roughly 5:7, so a landscape shot gets cut badly. Right now they're generated placeholders; drop real files at these names and they appear with no code change. |
 
 **Currently placeholders.** `01`–`04` and the hero are landscape test shots, not
-senior portraits. Replace them whenever real sessions come in — same filenames
-works fine, or use new names and update the list in `public/js/main.js`.
+senior portraits, and the three orbiting panels are generated stand-ins.
+Replace them whenever real sessions come in — same filenames works fine, or use
+new names and update the list in `public/js/main.js`.
+
+Those three orbiting portraits are the first real photographs anyone sees on
+the site, so they're worth picking carefully.
 
 Nothing breaks if a file is missing — you just get a warm gradient placeholder
 instead. Add them whenever you're ready.

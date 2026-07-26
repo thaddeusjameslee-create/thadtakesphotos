@@ -425,16 +425,19 @@ export function initGallery3D({ photos, onOpen, section, canvas, caption, filter
   /* Same reasoning as the camera scene: this section is display:none until
      the loader reveals it, so the canvas may measure zero right now. Watching
      the element catches the real size whenever it lands. */
-  const sizeWatcher = new ResizeObserver(() => {
+  // Resizing clears the drawing buffer, so anything that resizes must repaint.
+  const handleResize = () => {
     resize();
     if (!running && stripW > 0) {
       items.forEach(place);
       renderer.render(scene, camera);
     }
-  });
+  };
+
+  const sizeWatcher = new ResizeObserver(handleResize);
   sizeWatcher.observe(canvas);
 
-  window.addEventListener("resize", resize, { passive: true });
+  window.addEventListener("resize", handleResize, { passive: true });
 
   resize();
   canvas.style.cursor = "grab";
@@ -454,7 +457,7 @@ export function initGallery3D({ photos, onOpen, section, canvas, caption, filter
       running = false;
       visibility.disconnect();
       sizeWatcher.disconnect();
-      window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", handleResize);
       items.forEach(m => { m.material.uniforms.uTex.value.dispose(); m.material.dispose(); });
       geometry.dispose();
       renderer.dispose();

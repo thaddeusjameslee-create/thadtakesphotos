@@ -20,7 +20,24 @@ const CFG = {
   spread:     3.4,    // how far parts fly apart at full explosion
   ease:       0.16,   // how tightly it tracks the scroll; higher = snappier
   spin:       1.15,   // radians of turntable rotation across the section
+
+  // The three portraits circling the camera.
+  orbitRadius: 6.9,   // how wide the circle is
+  orbitTilt:   0.32,  // lifts the circle into an ellipse rather than a flat ring
+  orbitTurns:  1,     // full revolutions across the section
+  orbitPhase: -Math.PI / 2,  // start with one behind the camera, not in your face
+  portraitH:   3.1,   // portrait height in world units
+  portraitAR:  0.72,  // width ÷ height — portrait orientation
+  portraitPush: 1.3,  // how much the circle widens at full explosion
 };
+
+/* Drop real files at these paths and they replace the placeholders with no
+   code change. Portrait crops — that's the whole point of them. */
+const PORTRAITS = [
+  "photos/portrait-01.jpg",
+  "photos/portrait-02.jpg",
+  "photos/portrait-03.jpg",
+];
 
 /* Palette, pulled from the site's CSS so the model belongs to the page. */
 const COLOR = {
@@ -30,6 +47,40 @@ const COLOR = {
   accent: 0xb4552f,
   glass:  0x24384a,
 };
+
+/* A stand-in portrait: warm vertical gradient with its slot number on it, so
+   an empty slot still looks deliberate rather than broken. */
+function placeholderPortrait(label) {
+  const c = document.createElement("canvas");
+  c.width = 720; c.height = 1000;
+  const g = c.getContext("2d");
+
+  const grad = g.createLinearGradient(0, 0, c.width * 0.4, c.height);
+  grad.addColorStop(0, "#d7ccbb");
+  grad.addColorStop(1, "#8d7a60");
+  g.fillStyle = grad;
+  g.fillRect(0, 0, c.width, c.height);
+
+  g.fillStyle = "rgba(23,21,15,.34)";
+  g.textAlign = "center";
+  g.font = "500 34px Inter, system-ui, sans-serif";
+  g.fillText(label.toUpperCase(), c.width / 2, c.height / 2);
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function loadTexture(src) {
+  return new Promise(resolve => {
+    new THREE.TextureLoader().load(
+      src,
+      tex => { tex.colorSpace = THREE.SRGBColorSpace; resolve(tex); },
+      undefined,
+      () => resolve(null)   // no file there yet — keep the placeholder
+    );
+  });
+}
 
 export function initCamera3D({ section, canvas }) {
   const renderer = new THREE.WebGLRenderer({
@@ -133,8 +184,54 @@ export function initCamera3D({ section, canvas }) {
   rim.position.set(-2, -3, -6);
   scene.add(rim);
 
+  /* ── Orbiting portraits ─────────────────────────────────────
+     Three portrait panels circling the camera, each a photo plane on a
+     slightly larger ivory backing so it reads as a print rather than a
+     floating rectangle. They sit in the scene rather than in `rig`, so their
+     orbit is independent of the camera's own turntable spin.
+
+     Unlit (MeshBasicMaterial) on purpose — a photograph should look like the
+     photograph, not like it's being lit by the scene's key light.
+  ------------------------------------------------------------ */
+  const unitPlane = new THREE.PlaneGeometry(1, 1);
+  const pH = CFG.portraitH;
+  const pW = pH * CFG.portraitAR;
+
+  const orbiters = PORTRAITS.map((src, i) => {
+    const group = new THREE.Group();
+
+    const photoMat = new THREE.MeshBasicMaterial({
+      map: placeholderPortrait(`portrait ${String(i + 1).padStart(2, "0")}`),
+      toneMapped: false,
+    });
+    const photo = new THREE.Mesh(unitPlane, photoMat);
+    photo.scale.set(pW, pH, 1);
+
+    const frameMat = new THREE.MeshBasicMaterial({ color: 0xf7f3ec, toneMapped: false });
+    const frame = new THREE.Mesh(unitPlane, frameMat);
+    frame.scale.set(pW + 0.2, pH + 0.2, 1);
+    frame.position.z = -0.012;
+
+    // Both faces visible, so a panel swinging behind the camera still shows.
+    photoMat.side = frameMat.side = THREE.DoubleSide;
+
+    group.add(frame, photo);
+    scene.add(group);
+
+    loadTexture(src).then(tex => {
+      if (disposed || !tex) return;
+      photoMat.map.dispose();
+      photoMat.map = tex;
+      photoMat.needsUpdate = true;
+    });
+
+    return { group, photoMat, frameMat };
+  });
+
   /* ── State ──────────────────────────────────────────────── */
   let W = 0, H = 0;
+  let rigScale = 1;
+  let orbitR = CFG.orbitRadius;
   let explode = 0, targetExplode = 0;
   let progress = 0;
   let running = false;
@@ -153,7 +250,14 @@ export function initCamera3D({ section, canvas }) {
     camera.updateProjectionMatrix();
 
     // Narrow screens: pull back so the exploded spread still fits.
-    rig.scale.setScalar(camera.aspect < 1 ? 0.62 : 1);
+    rigScale = camera.aspect < 1 ? 0.62 : 1;
+    rig.scale.setScalar(rigScale);
+
+    // The orbit has to be measured against how wide the frame actually is, not
+    // set to a fixed number of world units. A radius that sits neatly at the
+    // edges of a laptop puts the portraits completely outside a phone screen.
+    const visibleW = CFG.viewHeight * camera.aspect;
+    orbitR = Math.min(CFG.orbitRadius * rigScale, visibleW * 0.42);
   }
 
   function readProgress() {
@@ -185,6 +289,26 @@ export function initCamera3D({ section, canvas }) {
 
     rig.rotation.y = -0.45 + progress * CFG.spin;
     rig.rotation.x = 0.16 - explode * 0.1;
+
+    // Portraits ride an inclined circle: the tilt term lifts one side so it
+    // reads as an ellipse in perspective instead of a flat ring edge-on. The
+    // circle also widens as the camera comes apart, so the two motions don't
+    // fight for the same space.
+    const radius = orbitR + explode * CFG.portraitPush * rigScale;
+
+    orbiters.forEach(({ group }, i) => {
+      const a = CFG.orbitPhase
+              + (i * Math.PI * 2) / orbiters.length
+              + progress * Math.PI * 2 * CFG.orbitTurns;
+
+      group.position.set(
+        Math.cos(a) * radius,
+        Math.sin(a) * CFG.orbitTilt * radius,
+        Math.sin(a) * radius
+      );
+      group.scale.setScalar(rigScale);
+      group.lookAt(camera.position);   // keep them square to the viewer
+    });
   }
 
   function frame() {
@@ -211,15 +335,19 @@ export function initCamera3D({ section, canvas }) {
      have been display:none a moment ago. Watching the element itself catches
      the size whenever it actually arrives, which a window resize listener
      alone never would. */
-  const sizeWatcher = new ResizeObserver(() => {
+  // Resizing clears the drawing buffer, so anything that resizes must repaint
+  // too — otherwise a resize while the loop is idle leaves a blank canvas.
+  const handleResize = () => {
     resize();
     if (!running) { apply(); renderer.render(scene, camera); }
-  });
+  };
+
+  const sizeWatcher = new ResizeObserver(handleResize);
   sizeWatcher.observe(canvas);
 
   // Device-pixel-ratio changes (dragging to another monitor) don't move the
   // element, so they need the window event too.
-  window.addEventListener("resize", resize, { passive: true });
+  window.addEventListener("resize", handleResize, { passive: true });
 
   resize();
 
@@ -236,9 +364,15 @@ export function initCamera3D({ section, canvas }) {
       running = false;
       visibility.disconnect();
       sizeWatcher.disconnect();
-      window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", handleResize);
       parts.forEach(p => p.mesh.geometry.dispose());
       Object.values(mat).forEach(m => m.dispose());
+      orbiters.forEach(o => {
+        o.photoMat.map?.dispose();
+        o.photoMat.dispose();
+        o.frameMat.dispose();
+      });
+      unitPlane.dispose();
       renderer.dispose();
     },
   };
