@@ -12,7 +12,7 @@
    and the rest of the page is unaffected.
    ============================================================ */
 
-import * as THREE from "./vendor/three.module.min.js";
+import * as THREE from "../vendor/three.module.min.js";
 
 const CFG = {
   camZ:       14,     // camera distance

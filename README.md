@@ -10,7 +10,8 @@ public/                     ← everything in here is public, nothing else is
   js/main.js                photo list + interactions + 3D loading
   js/camera3d.js            the scroll-driven exploded camera
   js/gallery3d.js           the scroll-driven 3D photo strip
-  js/vendor/                Three.js, vendored so the site depends on nobody
+  vendor/                   Three.js, vendored so the site depends on nobody
+                            (outside js/ on purpose — see _headers)
   photos/                   your images (see PHOTOS.md)
   _headers                  cache + security headers
 

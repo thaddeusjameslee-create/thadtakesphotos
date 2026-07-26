@@ -8,7 +8,7 @@
    plain masonry grid stays on screen instead.
    ============================================================ */
 
-import * as THREE from "./vendor/three.module.min.js";
+import * as THREE from "../vendor/three.module.min.js";
 
 /* Tunables — safe to fiddle with. */
 const CFG = {
