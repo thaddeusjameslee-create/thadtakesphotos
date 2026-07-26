@@ -106,15 +106,31 @@ so you can deploy first and add photos as you shoot.
 
 ### 3. Connect the contact form
 
-A static site can't send email on its own, so the form posts to
-[Formspree](https://formspree.io) (free tier: 50 submissions/month).
+A static site has no server, so nothing in it can put mail on the wire. The
+form therefore has two modes, and it picks automatically:
 
-1. Sign up, create a form, copy the endpoint it gives you.
-2. In `index.html`, find `action="https://formspree.io/f/YOUR_FORM_ID"` and paste
-   yours in.
+**Now — mail-app handoff.** While the action below still says `YOUR_FORM_ID`,
+submitting opens the visitor's own mail client with the message addressed and
+filled in. Zero setup, nothing can be silently swallowed. Clunkier, and does
+nothing for someone on desktop webmail with no default mail app.
 
-Until you do that, the form shows a "not connected yet" message instead of
-silently failing.
+**Better — a real submit.** Sign up at [Formspree](https://formspree.io) (free
+tier: 50 submissions/month), create a form, and paste its endpoint over
+`YOUR_FORM_ID` in the `action` of `#contact-form` in `index.html`. That's the
+only change — `js/main.js` detects it and switches to a background POST that
+never leaves the page.
+
+The form already sends the fields Formspree expects:
+
+| Field | Purpose |
+|---|---|
+| `email` | the visitor's address — Formspree makes it the reply-to, so hitting reply in Gmail answers them |
+| `_subject` | subject line of the email that reaches you |
+| `_gotcha` | honeypot; bots fill hidden fields, humans don't, filled ones get discarded |
+
+**Other options considered:** Cloudflare's own Email Sending would avoid a third
+party entirely, but it requires the Workers Paid plan ($5/mo). Web3Forms is free
+and unlimited with no account, just a smaller company.
 
 ### 4. Add real content
 

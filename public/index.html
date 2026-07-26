@@ -135,6 +135,12 @@
           <label for="message">Message</label>
           <textarea id="message" name="message" rows="5"></textarea>
         </div>
+        <!-- Formspree reads these. _subject sets the subject line of the email
+             that reaches you; _gotcha is a honeypot — bots fill hidden fields,
+             humans can't see it, and anything with it filled is discarded. The
+             visitor's own address goes in `email` above, which Formspree uses
+             as the reply-to, so hitting reply in Gmail answers them directly. -->
+        <input type="hidden" name="_subject" value="New enquiry via thadtakesphotos.com">
         <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp">
         <button class="btn btn--block" type="submit">Send</button>
         <p class="form__status" id="form-status" role="status" aria-live="polite"></p>
