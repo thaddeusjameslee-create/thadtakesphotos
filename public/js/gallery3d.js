@@ -273,7 +273,11 @@ export function initGallery3D({ photos, onOpen, section, canvas, caption, filter
   /* ── Scroll → strip position ────────────────────────────── */
   function readScroll() {
     const rect = section.getBoundingClientRect();
-    const travel = section.offsetHeight - window.innerHeight;
+
+    // H, not window.innerHeight — on mobile innerHeight changes as the address
+    // bar hides, which would rescale the mapping mid-scroll and make the strip
+    // lurch. The canvas height is set in svh and holds still.
+    const travel = section.offsetHeight - H;
     if (travel <= 0) return 0;
     const p = Math.min(Math.max(-rect.top / travel, 0), 1);
     return p * stripW;

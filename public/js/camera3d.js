@@ -18,7 +18,7 @@ const CFG = {
   camZ:       14,     // camera distance
   viewHeight: 11,     // world units visible top to bottom
   spread:     3.4,    // how far parts fly apart at full explosion
-  ease:       0.09,   // how lazily it follows the scroll
+  ease:       0.16,   // how tightly it tracks the scroll; higher = snappier
   spin:       1.15,   // radians of turntable rotation across the section
 };
 
@@ -31,7 +31,7 @@ const COLOR = {
   glass:  0x24384a,
 };
 
-export function initCamera3D({ section, canvas, caption }) {
+export function initCamera3D({ section, canvas }) {
   const renderer = new THREE.WebGLRenderer({
     canvas, antialias: true, alpha: true, powerPreference: "high-performance",
   });
@@ -158,7 +158,12 @@ export function initCamera3D({ section, canvas, caption }) {
 
   function readProgress() {
     const rect = section.getBoundingClientRect();
-    const travel = section.offsetHeight - window.innerHeight;
+
+    // Measure against the sticky pane's own height, NOT window.innerHeight.
+    // Mobile browsers grow and shrink innerHeight as the address bar hides,
+    // which would silently rescale the whole animation mid-scroll and make it
+    // lurch. H comes from the canvas, which is sized in svh and stays put.
+    const travel = section.offsetHeight - H;
     if (travel <= 0) return 0;
     return Math.min(Math.max(-rect.top / travel, 0), 1);
   }
@@ -180,12 +185,6 @@ export function initCamera3D({ section, canvas, caption }) {
 
     rig.rotation.y = -0.45 + progress * CFG.spin;
     rig.rotation.x = 0.16 - explode * 0.1;
-
-    if (caption) {
-      const showing = explode > 0.35;
-      caption.textContent = showing ? `${parts.length} parts` : "";
-      caption.classList.toggle("is-on", showing);
-    }
   }
 
   function frame() {

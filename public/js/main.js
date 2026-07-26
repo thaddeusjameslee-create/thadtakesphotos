@@ -278,27 +278,23 @@ if (canRun3D()) {
      no layout box for an observer to watch — so this loads shortly
      after the page settles rather than on scroll.
   ---------------------------------------------------------- */
-  const whenIdle = fn =>
-    "requestIdleCallback" in window
-      ? requestIdleCallback(fn, { timeout: 2000 })
-      : setTimeout(fn, 800);
+  const cameraSection = $("#camera-section");
 
-  addEventListener("load", () => whenIdle(() => {
-    import("./camera3d.js")
-      .then(({ initCamera3D }) => {
-        const section = $("#camera-section");
-        section.hidden = false;
-        initCamera3D({
-          section,
-          canvas:  $("#camera-canvas"),
-          caption: $("#camera-caption")
-        });
-      })
-      .catch(err => {
-        // Section stays hidden, so the page just doesn't have a camera in it.
-        console.warn("Camera scene unavailable.", err);
-      });
-  }));
+  // Reveal it NOW, before the module loads. Revealing it later would drop a
+  // couple of screens of content into the page while the visitor is already
+  // scrolling, shoving everything below them and reading as a hard jolt.
+  // Claiming the space up front keeps the page height stable from the start.
+  cameraSection.hidden = false;
+
+  import("./camera3d.js")
+    .then(({ initCamera3D }) => {
+      initCamera3D({ section: cameraSection, canvas: $("#camera-canvas") });
+    })
+    .catch(err => {
+      // Put the space back rather than leave two screens of blank page.
+      cameraSection.hidden = true;
+      console.warn("Camera scene unavailable.", err);
+    });
 
   /* ── The photo strip ───────────────────────────────────────
      Only worth loading if there are photos to put on it.
