@@ -24,9 +24,9 @@ const CFG = {
   // The three portraits circling the camera.
   orbitRadius: 6.9,   // how wide the circle is
   orbitTilt:   0.32,  // lifts the circle into an ellipse rather than a flat ring
-  orbitTurns:  1,     // full revolutions across the section
+  orbitTurns:  0.55,  // full revolutions across the section — lower is slower
   orbitPhase: -Math.PI / 2,  // start with one behind the camera, not in your face
-  portraitH:   3.1,   // portrait height in world units
+  portraitH:   4.0,   // portrait height in world units
   portraitAR:  0.72,  // width ÷ height — portrait orientation
   portraitPush: 1.3,  // how much the circle widens at full explosion
 };
@@ -256,8 +256,11 @@ export function initCamera3D({ section, canvas }) {
     // The orbit has to be measured against how wide the frame actually is, not
     // set to a fixed number of world units. A radius that sits neatly at the
     // edges of a laptop puts the portraits completely outside a phone screen.
+    // 0.38 rather than half the frame: perspective enlarges the panels as they
+    // swing toward the viewer, so the circle has to sit inside the frame edge
+    // by more than the panel's own width would suggest.
     const visibleW = CFG.viewHeight * camera.aspect;
-    orbitR = Math.min(CFG.orbitRadius * rigScale, visibleW * 0.42);
+    orbitR = Math.min(CFG.orbitRadius * rigScale, visibleW * 0.38);
   }
 
   function readProgress() {
