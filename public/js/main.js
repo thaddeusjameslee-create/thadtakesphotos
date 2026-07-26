@@ -238,10 +238,11 @@ form.addEventListener("submit", async e => {
 
     form.reset();
     status.className = "form__status is-ok";
-    status.textContent = "Got it — I'll get back to you within a day.";
+    status.textContent = "Got it — thanks. I'll be in touch.";
   } catch (err) {
+    // No fallback address here until there's a real one to publish.
     status.className = "form__status is-err";
-    status.innerHTML = 'Something went wrong. Email me directly at <a href="mailto:hello@thadtakesphotos.com">hello@thadtakesphotos.com</a>.';
+    status.textContent = "Something went wrong sending that. Please try again.";
   } finally {
     button.disabled = false;
     button.textContent = label;
@@ -251,13 +252,13 @@ form.addEventListener("submit", async e => {
 /* ── Footer year ─────────────────────────────────────────── */
 $("#year").textContent = new Date().getFullYear();
 
-/* ── 3D gallery ──────────────────────────────────────────────
-   Strictly an enhancement. The masonry grid above is the real
-   content; the strip only appears if the device can drive it.
+/* ── 3D ──────────────────────────────────────────────────────
+   Two independent WebGL scenes: the exploded camera and the photo
+   strip. Both are strictly enhancements — the page is complete
+   without either, and each is skipped if the device can't drive
+   it or if loading Three.js fails.
 ------------------------------------------------------------ */
 function canRun3D() {
-  // Nothing to put on the strip yet.
-  if (PHOTOS.length === 0) return false;
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
   // Bail on low-end hardware rather than hand someone a 12fps slideshow.
   if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2) return false;
@@ -271,44 +272,76 @@ function canRun3D() {
 }
 
 if (canRun3D()) {
-  const glSection = $("#gl-section");
-  const toggle3d  = $("#view-toggle");
 
-  const load3D = () => import("./gallery3d.js")
-    .then(({ initGallery3D }) => {
-      glSection.hidden = false;
-      document.body.classList.add("has-3d");
-      toggle3d.hidden = false;
+  /* ── The exploded camera ───────────────────────────────────
+     Its section sits second on the page, and a `hidden` element has
+     no layout box for an observer to watch — so this loads shortly
+     after the page settles rather than on scroll.
+  ---------------------------------------------------------- */
+  const whenIdle = fn =>
+    "requestIdleCallback" in window
+      ? requestIdleCallback(fn, { timeout: 2000 })
+      : setTimeout(fn, 800);
 
-      initGallery3D({
-        photos:  PHOTOS,
-        onOpen:  openLightbox,
-        section: glSection,
-        canvas:  $("#gl-canvas"),
-        caption: $("#gl-caption"),
-        filters: $$(".filter[data-filter]")
+  addEventListener("load", () => whenIdle(() => {
+    import("./camera3d.js")
+      .then(({ initCamera3D }) => {
+        const section = $("#camera-section");
+        section.hidden = false;
+        initCamera3D({
+          section,
+          canvas:  $("#camera-canvas"),
+          caption: $("#camera-caption")
+        });
+      })
+      .catch(err => {
+        // Section stays hidden, so the page just doesn't have a camera in it.
+        console.warn("Camera scene unavailable.", err);
+      });
+  }));
+
+  /* ── The photo strip ───────────────────────────────────────
+     Only worth loading if there are photos to put on it.
+  ---------------------------------------------------------- */
+  if (PHOTOS.length > 0) {
+    const glSection = $("#gl-section");
+    const toggle3d  = $("#view-toggle");
+
+    const loadStrip = () => import("./gallery3d.js")
+      .then(({ initGallery3D }) => {
+        glSection.hidden = false;
+        document.body.classList.add("has-3d");
+
+        initGallery3D({
+          photos:  PHOTOS,
+          onOpen:  openLightbox,
+          section: glSection,
+          canvas:  $("#gl-canvas"),
+          caption: $("#gl-caption"),
+          filters: $$(".filter[data-filter]")
+        });
+
+        // Guarded: a missing toggle must never take the strip down with it.
+        if (!toggle3d) return;
+        toggle3d.hidden = false;
+        toggle3d.addEventListener("click", () => {
+          const on = document.body.classList.toggle("has-3d");
+          glSection.hidden = !on;
+          toggle3d.textContent = on ? "Grid view" : "3D view";
+          toggle3d.setAttribute("aria-pressed", String(on));
+        });
+      })
+      .catch(err => {
+        // The grid is already on screen, so there's nothing to recover.
+        console.warn("3D strip unavailable, staying with the grid.", err);
       });
 
-      toggle3d.addEventListener("click", () => {
-        const on = document.body.classList.toggle("has-3d");
-        glSection.hidden = !on;
-        toggle3d.textContent = on ? "Grid view" : "3D view";
-        toggle3d.setAttribute("aria-pressed", String(on));
-      });
-    })
-    .catch(err => {
-      // Three.js failed to load or the shaders wouldn't compile — no harm,
-      // the grid is already on screen.
-      console.warn("3D gallery unavailable, staying with the grid.", err);
-    });
+    const trigger = new IntersectionObserver(([entry], obs) => {
+      if (!entry.isIntersecting) return;
+      obs.disconnect();
+      loadStrip();
+    }, { rootMargin: "600px 0px" });
 
-  // Three.js is ~180KB over the wire, so don't fetch it until the visitor is
-  // actually heading toward the gallery.
-  const trigger = new IntersectionObserver(([entry], obs) => {
-    if (!entry.isIntersecting) return;
-    obs.disconnect();
-    load3D();
-  }, { rootMargin: "600px 0px" });
-
-  trigger.observe($("#work"));
+    trigger.observe($("#work"));
+  }
 }

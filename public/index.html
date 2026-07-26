@@ -74,10 +74,24 @@
     <a class="hero__scroll" href="#work" aria-label="Scroll to gallery"><span></span></a>
   </section>
 
+  <!-- ── CAMERA ─────────────────────────────────────────────
+       Scroll-driven exploded view, built from primitives in
+       js/camera3d.js. Hidden until the script confirms the
+       device can run it. -->
+  <section class="rig" id="camera-section" hidden>
+    <div class="rig__sticky">
+      <canvas class="rig__canvas" id="camera-canvas"></canvas>
+      <p class="rig__caption" id="camera-caption" aria-hidden="true"></p>
+      <p class="rig__hint">Keep scrolling</p>
+    </div>
+  </section>
+
   <!-- ── WORK ───────────────────────────────────────────── -->
   <section class="section" id="work">
     <div class="section__head reveal">
       <h2>Work</h2>
+      <!-- Revealed by js/main.js only once the 3D strip is actually running. -->
+      <button class="viewtoggle" id="view-toggle" aria-pressed="true" hidden>Grid view</button>
     </div>
 
     <!-- The gallery builds itself from the PHOTOS list in js/main.js. That list

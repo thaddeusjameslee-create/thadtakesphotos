@@ -7,7 +7,8 @@ no framework. Open `index.html` in a browser and it just works.
 public/                     ← everything in here is public, nothing else is
   index.html                all the page copy lives here
   css/styles.css            all the styling
-  js/main.js                gallery list + interactions
+  js/main.js                photo list + interactions + 3D loading
+  js/camera3d.js            the scroll-driven exploded camera
   js/gallery3d.js           the scroll-driven 3D photo strip
   js/vendor/                Three.js, vendored so the site depends on nobody
   photos/                   your images (see PHOTOS.md)
@@ -21,6 +22,22 @@ README.md                   this file
 The `public/` split isn't decoration. Only that folder is uploaded, so this
 README, the deploy config, and your git history physically cannot end up on
 the web — no filter rule to get wrong.
+
+## The exploded camera
+
+A stylised SLR built entirely from Three.js primitives in `js/camera3d.js` —
+twenty separate parts, no downloaded model. Scrolling its section takes it from
+assembled, out to an exploded view at the halfway point, and back together by
+the end. The out-and-back comes from a single sine over the scroll progress.
+
+Building it in code rather than importing a model was the deciding factor: an
+exploded view needs parts that were never merged into one mesh, and most
+downloadable camera models are a single blob.
+
+Tuning lives in the `CFG` block at the top — `spread` for how far parts fly,
+`spin` for how much it turns, `ease` for how lazily it follows the scroll. The
+part list below that is a plain array; each entry has a resting position and
+the direction it travels when things come apart.
 
 ## The 3D gallery
 

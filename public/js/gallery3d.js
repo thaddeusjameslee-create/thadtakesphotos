@@ -225,6 +225,27 @@ export function initGallery3D({ photos, onOpen, section, canvas, caption, filter
     stripW = Math.max(cursor, 1);
   }
 
+  /* Put one photo where it belongs for the current scroll offset. Shared by
+     the frame loop and the very first paint, so both agree — an earlier
+     version positioned the first frame without the wrap and bunched every
+     photo off to one side until the loop took over. */
+  function place(mesh) {
+    const half = stripW / 2;
+
+    // Wrap into [-half, half) so the strip never runs out.
+    let x = (mesh.userData.baseX - offset) % stripW;
+    if (x < 0) x += stripW;
+    if (x > half) x -= stripW;
+
+    mesh.position.x = x;
+    mesh.position.z = -CFG.curve * x * x;
+    mesh.rotation.y = -x * CFG.twist;
+
+    // Fade and desaturate photos heading off the sides.
+    mesh.material.uniforms.uEdge.value = Math.min(Math.abs(x) / (visibleW * 0.75), 1);
+    mesh.visible = Math.abs(x) < visibleW * 1.2;
+  }
+
   function resize() {
     const rect = canvas.getBoundingClientRect();
     W = rect.width; H = rect.height;
@@ -372,6 +393,8 @@ export function initGallery3D({ photos, onOpen, section, canvas, caption, filter
 
       if (d.active && stripW > 0) {
         place(mesh);
+      } else {
+        mesh.visible = false;
       }
 
       d.hover += ((hovered === mesh ? 1 : 0) - d.hover) * 0.12;
@@ -395,6 +418,18 @@ export function initGallery3D({ photos, onOpen, section, canvas, caption, filter
 
   visibility.observe(section);
 
+  /* Same reasoning as the camera scene: this section is display:none until
+     the loader reveals it, so the canvas may measure zero right now. Watching
+     the element catches the real size whenever it lands. */
+  const sizeWatcher = new ResizeObserver(() => {
+    resize();
+    if (!running && stripW > 0) {
+      items.forEach(place);
+      renderer.render(scene, camera);
+    }
+  });
+  sizeWatcher.observe(canvas);
+
   window.addEventListener("resize", resize, { passive: true });
 
   resize();
@@ -414,6 +449,7 @@ export function initGallery3D({ photos, onOpen, section, canvas, caption, filter
       disposed = true;
       running = false;
       visibility.disconnect();
+      sizeWatcher.disconnect();
       window.removeEventListener("resize", resize);
       items.forEach(m => { m.material.uniforms.uTex.value.dispose(); m.material.dispose(); });
       geometry.dispose();
