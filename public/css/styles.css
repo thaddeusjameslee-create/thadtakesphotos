@@ -104,7 +104,9 @@ em { font-style: italic; }
   font-family: var(--display); font-size: 1.15rem; letter-spacing: -.01em;
   text-decoration: none; white-space: nowrap;
 }
-.nav__brand span { color: var(--clay); font-style: italic; }
+/* "takes" is wrapped in a span only so it could be accented. It no longer is —
+   it inherits colour and weight so the wordmark reads as one solid piece. */
+.nav__brand span { color: inherit; font-style: normal; }
 .nav__links { display: flex; align-items: center; gap: 2rem; }
 .nav__links a {
   text-decoration: none; font-size: .88rem; font-weight: 500;
