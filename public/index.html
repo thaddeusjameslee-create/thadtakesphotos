@@ -117,12 +117,12 @@
         </ul>
       </div>
 
-      <!-- A static site can't send mail on its own. Until a form service is
-           wired up, submitting hands the message to the visitor's own mail app,
-           already addressed and filled in — see the handler in js/main.js.
-           To upgrade: swap this action for a real Formspree endpoint and the
-           form posts in the background instead. README step 3. -->
-      <form class="form reveal" id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+      <!-- Posts to Formspree, which forwards to the inbox configured on that
+           form. A static site has no server of its own, so this is what lets
+           the form submit in the background instead of handing off to the
+           visitor's mail app. If the action is ever reset to a placeholder,
+           js/main.js detects it and falls back to that handoff. README step 3. -->
+      <form class="form reveal" id="contact-form" action="https://formspree.io/f/xeeyvayo" method="POST">
         <div class="field">
           <label for="name">Your name</label>
           <input id="name" name="name" type="text" required autocomplete="name">
