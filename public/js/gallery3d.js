@@ -14,9 +14,8 @@ import * as THREE from "./vendor/three.module.min.js";
 const CFG = {
   camZ:        10,      // camera distance; also sets the world scale
   viewHeight:  10,      // world units visible top-to-bottom
-  planeH:      5.0,     // photo height in world units
-  aspect:      0.72,    // photo width ÷ height (portrait)
-  gapFactor:   1.34,    // spacing between photos, as a multiple of width
+  planeH:      5.0,     // baseline photo height in world units
+  gapFactor:   0.16,    // gap between photos, as a multiple of that height
   curve:       0.055,   // how far the strip bows away at the edges
   twist:       0.055,   // how much each photo turns to face the middle
   ease:        0.075,   // strip inertia; lower = floatier
@@ -148,7 +147,7 @@ export function initGallery3D({ photos, onOpen, section, canvas, caption, filter
   const pointer   = new THREE.Vector2(-10, -10);
 
   let W = 0, H = 0, visibleW = 0;
-  let planeW = 0, planeH = 0, spacing = 0, stripW = 0;
+  let baseH = 0, gap = 0, stripW = 0;
   let offset = 0, target = 0, velocity = 0, dragDelta = 0;
   let hovered = null;
   let running = false;
@@ -190,11 +189,40 @@ export function initGallery3D({ photos, onOpen, section, canvas, caption, filter
     });
   });
 
-  /* ── Sizing ─────────────────────────────────────────────── */
+  /* ── Sizing ─────────────────────────────────────────────────
+     Each photo is sized from its own `ratio`, so a landscape shot and a
+     portrait one can sit on the strip together without either being cropped
+     to fit a single shared shape. Positions accumulate rather than sitting on
+     a fixed pitch, which is what keeps the gaps even when widths differ.
+  ------------------------------------------------------------ */
+  function sizeItem(mesh) {
+    // ratio is height ÷ width as a percent; invert it to get width ÷ height.
+    const wh = 100 / (mesh.userData.photo.ratio || 125);
+
+    let h = baseH;
+    let w = h * wh;
+
+    // Never let a wide photo run past the edges of the viewport.
+    const maxW = visibleW * 0.86;
+    if (w > maxW) { w = maxW; h = w / wh; }
+
+    mesh.scale.set(w, h, 1);
+    mesh.material.uniforms.uPlaneSize.value.set(w, h);
+    mesh.userData.width = w;
+  }
+
   function layout() {
     const active = items.filter(m => m.userData.active);
-    active.forEach((mesh, i) => { mesh.userData.baseX = i * spacing; });
-    stripW = Math.max(active.length, 1) * spacing;
+
+    let cursor = 0;
+    active.forEach(mesh => {
+      const w = mesh.userData.width || 1;
+      cursor += w / 2;              // walk to this photo's centre
+      mesh.userData.baseX = cursor;
+      cursor += w / 2 + gap;        // then past it, plus the gap
+    });
+
+    stripW = Math.max(cursor, 1);
   }
 
   function resize() {
@@ -214,15 +242,10 @@ export function initGallery3D({ photos, onOpen, section, canvas, caption, filter
 
     // On a phone the strip should show roughly one photo at a time.
     const portrait = camera.aspect < 1;
-    planeH  = portrait ? CFG.viewHeight * 0.62 : CFG.planeH;
-    planeW  = planeH * CFG.aspect;
-    spacing = planeW * (portrait ? 1.18 : CFG.gapFactor);
+    baseH = portrait ? CFG.viewHeight * 0.52 : CFG.planeH;
+    gap   = baseH * CFG.gapFactor;
 
-    items.forEach(mesh => {
-      mesh.scale.set(planeW, planeH, 1);
-      mesh.material.uniforms.uPlaneSize.value.set(planeW, planeH);
-    });
-
+    items.forEach(sizeItem);
     layout();
   }
 
@@ -304,6 +327,25 @@ export function initGallery3D({ photos, onOpen, section, canvas, caption, filter
     });
   });
 
+  /* Position one photo for the current `offset`, wrapping it around the strip
+     so the run never ends. Used by both the animation loop and the very first
+     paint — they must agree, or that first frame lands in the wrong place. */
+  function place(mesh) {
+    const half = stripW / 2;
+
+    let x = (mesh.userData.baseX - offset) % stripW;
+    if (x < 0) x += stripW;
+    if (x > half) x -= stripW;
+
+    mesh.position.x = x;
+    mesh.position.z = -CFG.curve * x * x;
+    mesh.rotation.y = -x * CFG.twist;
+
+    // Fade and desaturate photos heading off the sides.
+    mesh.material.uniforms.uEdge.value = Math.min(Math.abs(x) / (visibleW * 0.75), 1);
+    mesh.visible = Math.abs(x) < visibleW * 1.2;
+  }
+
   /* ── Frame loop ─────────────────────────────────────────── */
   function frame() {
     if (!running) return;
@@ -325,27 +367,11 @@ export function initGallery3D({ photos, onOpen, section, canvas, caption, filter
       caption.classList.toggle("is-on", Boolean(hovered));
     }
 
-    const half = stripW / 2;
-
     items.forEach(mesh => {
       const d = mesh.userData;
 
       if (d.active && stripW > 0) {
-        // Wrap into [-half, half) so the strip never runs out.
-        let x = (d.baseX - offset) % stripW;
-        if (x < 0) x += stripW;
-        if (x > half) x -= stripW;
-
-        mesh.position.x = x;
-        mesh.position.z = -CFG.curve * x * x;
-        mesh.rotation.y = -x * CFG.twist;
-
-        // Fade and desaturate photos heading off the sides.
-        const edge = Math.min(Math.abs(x) / (visibleW * 0.75), 1);
-        mesh.material.uniforms.uEdge.value = edge;
-        mesh.visible = Math.abs(x) < visibleW * 1.2;
-      } else {
-        mesh.visible = false;
+        place(mesh);
       }
 
       d.hover += ((hovered === mesh ? 1 : 0) - d.hover) * 0.12;
@@ -377,11 +403,7 @@ export function initGallery3D({ photos, onOpen, section, canvas, caption, filter
   // Paint one frame straight away so the canvas is never blank while we wait
   // for the visibility observer to start the loop.
   offset = target = readScroll();
-  items.forEach(mesh => {
-    const x = mesh.userData.baseX - offset;
-    mesh.position.set(x, 0, -CFG.curve * x * x);
-    mesh.rotation.y = -x * CFG.twist;
-  });
+  items.forEach(place);
   renderer.render(scene, camera);
 
   return {

@@ -12,7 +12,11 @@ Filenames the site is looking for:
 | `hero.jpg` | Full-screen background image at the very top. Use a wide, horizontal shot with empty space on the **left** — the headline sits there. |
 | `about.jpg` | Vertical photo of you in the About section (4:5 works best). |
 | `og.jpg` | The thumbnail that appears when someone texts or posts the link. 1200×630, horizontal. |
-| `01.jpg` … `12.jpg` | The gallery grid. |
+| `01.jpg`, `02.jpg`, … | The gallery. As many as you list in `PHOTOS`. |
+
+**Currently placeholders.** `01`–`04` and the hero are landscape test shots, not
+senior portraits. Replace them whenever real sessions come in — same filenames
+works fine, or use new names and update the list in `public/js/main.js`.
 
 Nothing breaks if a file is missing — you just get a warm gradient placeholder
 instead. Add them whenever you're ready.

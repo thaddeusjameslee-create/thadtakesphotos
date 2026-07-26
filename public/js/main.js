@@ -12,14 +12,15 @@
              100 = square. Only affects the placeholder box before
              the image loads, so eyeballing it is fine.
 ------------------------------------------------------------ */
+// PLACEHOLDERS — these are landscape test shots, not senior portraits.
+// Swap them out as real sessions come in: drop files in public/photos/ and
+// edit the lines below. `ratio` is height ÷ width as a percent, so 75 is a
+// 4:3 landscape and 125 is a portrait. Both the grid and the 3D strip read it.
 const PHOTOS = [
-  // Empty on purpose — the previous entries described photos that didn't exist.
-  // Add a line per photo and the grid, the lightbox and the 3D strip all wake
-  // up on their own. Example of the shape:
-  //
-  //   { src: "photos/01.jpg", alt: "What's happening in the photo", ratio: 125 },
-  //
-  // `tag` is optional and only matters if you add filter buttons back.
+  { src: "photos/01.jpg", alt: "Sunrise over a snowfield, frost catching the light", ratio: 75 },
+  { src: "photos/02.jpg", alt: "Last light on a rocky ridge above the treeline",     ratio: 75 },
+  { src: "photos/03.jpg", alt: "Sailboats anchored in a harbour at sunset",          ratio: 75 },
+  { src: "photos/04.jpg", alt: "A rainbow over a green mountain valley",             ratio: 75 },
 ];
 
 const $  = (sel, root = document) => root.querySelector(sel);
