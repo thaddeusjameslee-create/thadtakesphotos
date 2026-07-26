@@ -29,7 +29,8 @@ const CFG = {
   orbitTurns:  1,     // full revolutions across the section — lower is slower
   orbitPhase: -Math.PI / 2,  // start with one behind the camera, not in your face
   portraitH:   4.0,   // portrait height in world units
-  portraitAR:  0.72,  // width ÷ height — portrait orientation
+  portraitAR:  0.667, // width ÷ height — 2:3, the native portrait ratio out of
+                      // a DSLR, so your framing isn't cropped to fit the panel
   portraitPush: 1.3,  // how much the circle widens at full explosion
 };
 
