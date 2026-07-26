@@ -19,6 +19,8 @@ const CFG = {
   viewHeight: 11,     // world units visible top to bottom
   spread:     3.4,    // how far parts fly apart at full explosion
   ease:       0.16,   // how tightly it tracks the scroll; higher = snappier
+  maxScale:   0.85,   // ceiling on size, even when there's room to spare
+  fitMargin:  0.92,   // fraction of the frame the exploded view may occupy
   spin:       1.15,   // radians of turntable rotation across the section
 
   // The three portraits circling the camera.
@@ -168,6 +170,18 @@ export function initCamera3D({ section, canvas }) {
     };
   });
 
+  /* How far the model reaches at full explosion, measured from the geometry
+     rather than guessed. Bounding spheres are rotation-proof, so a part that
+     gets tumbled as it separates can't poke outside what we measured. This is
+     what lets resize() pick a scale that provably fits any frame. */
+  let exHalfW = 0, exHalfH = 0;
+  parts.forEach(p => {
+    p.mesh.geometry.computeBoundingSphere();
+    const reach = p.mesh.geometry.boundingSphere.radius;
+    exHalfW = Math.max(exHalfW, Math.abs(p.away.x) + reach);
+    exHalfH = Math.max(exHalfH, Math.abs(p.away.y) + reach);
+  });
+
   /* ── Lighting ───────────────────────────────────────────── */
   scene.add(new THREE.HemisphereLight(0xfbf6ee, 0x4a3f33, 0.85));
 
@@ -249,18 +263,40 @@ export function initCamera3D({ section, canvas }) {
     camera.fov = 2 * Math.atan((CFG.viewHeight / 2) / CFG.camZ) * (180 / Math.PI);
     camera.updateProjectionMatrix();
 
-    // Narrow screens: pull back so the exploded spread still fits.
-    rigScale = camera.aspect < 1 ? 0.62 : 1;
+    const visibleW = CFG.viewHeight * camera.aspect;
+
+    // Scale so the fully exploded model fits the frame on both axes, instead
+    // of flipping between two hardcoded sizes at aspect 1.0. That switch left
+    // a narrow-but-landscape window at full size with nothing trimmed, and
+    // jumped discontinuously the moment the window crossed square.
+    const fitW = (visibleW * 0.5 * CFG.fitMargin) / exHalfW;
+    const fitH = (CFG.viewHeight * 0.5 * CFG.fitMargin) / exHalfH;
+    rigScale = Math.min(CFG.maxScale, fitW, fitH);
     rig.scale.setScalar(rigScale);
 
-    // The orbit has to be measured against how wide the frame actually is, not
-    // set to a fixed number of world units. A radius that sits neatly at the
-    // edges of a laptop puts the portraits completely outside a phone screen.
-    // 0.38 rather than half the frame: perspective enlarges the panels as they
-    // swing toward the viewer, so the circle has to sit inside the frame edge
-    // by more than the panel's own width would suggest.
-    const visibleW = CFG.viewHeight * camera.aspect;
-    orbitR = Math.min(CFG.orbitRadius * rigScale, visibleW * 0.38);
+    /* Orbit radius is solved, not guessed. A flat fraction of the frame width
+       can't work: the panels swing toward the viewer as they go round, and
+       perspective magnifies them exactly when they're also furthest off
+       centre. The push they get at full explosion has to be paid for up front
+       too, or they'd overflow at the midpoint of the animation. */
+    const panelW = CFG.portraitH * CFG.portraitAR * rigScale;
+    const limit  = visibleW * 0.5 * CFG.fitMargin;
+
+    const reachOf = r => {
+      let worst = 0;
+      for (let i = 0; i < 72; i++) {
+        const a = (i / 72) * Math.PI * 2;
+        const z = Math.sin(a) * r;
+        const persp = CFG.camZ / Math.max(CFG.camZ - z, 0.5);
+        worst = Math.max(worst, (Math.abs(Math.cos(a)) * r + panelW / 2) * persp);
+      }
+      return worst;
+    };
+
+    let r = CFG.orbitRadius * rigScale;
+    for (let i = 0; i < 16 && reachOf(r) > limit; i++) r *= limit / reachOf(r);
+
+    orbitR = Math.max(r - CFG.portraitPush * rigScale, panelW * 0.6);
   }
 
   function readProgress() {
