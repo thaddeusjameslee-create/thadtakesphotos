@@ -107,7 +107,19 @@ em { font-style: italic; }
 /* "takes" is wrapped in a span only so it could be accented. It no longer is —
    it inherits colour and weight so the wordmark reads as one solid piece. */
 .nav__brand span { color: inherit; font-style: normal; }
-.nav__links { display: flex; align-items: center; gap: 2rem; }
+/* Instagram icon. Stays in the bar at every width — the text links collapse
+   into the mobile menu, this doesn't. */
+.nav__ig {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; margin-left: auto;
+  color: inherit; text-decoration: none;
+  border-radius: 50%;
+  transition: color .25s var(--ease), background .25s var(--ease), transform .25s var(--ease);
+}
+.nav__ig:hover { color: var(--clay); transform: translateY(-1px); }
+.nav__links + .nav__ig { margin-left: 0; }
+
+.nav__links { display: flex; align-items: center; gap: 2rem; margin-left: auto; }
 .nav__links a {
   text-decoration: none; font-size: .88rem; font-weight: 500;
   position: relative; padding-bottom: 2px;
@@ -215,12 +227,15 @@ em { font-style: italic; }
 @keyframes slide { to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .marquee__track { animation: none; } }
 
-/* ── Sections ────────────────────────────────────────────── */
-.section { padding: clamp(4.5rem, 11vw, 8.5rem) var(--gut); }
+/* ── Sections ──────────────────────────────────────────────
+   Kept deliberately tight. The 3D sections are already full-height, so
+   generous section padding on top of them left big dead gaps between the
+   title, the camera and the photographs. */
+.section { padding: clamp(2.25rem, 5vw, 4rem) var(--gut); }
 .section > * { max-width: var(--maxw); margin-inline: auto; }
 .section--alt { background: var(--ivory-deep); }
-.section__head { margin-bottom: 3rem; }
-.section__head h2 { margin-bottom: .85rem; }
+.section__head { margin-bottom: 1.5rem; }
+.section__head h2 { margin-bottom: .5rem; }
 
 /* ── Gallery ─────────────────────────────────────────────── */
 .filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 2rem; }
@@ -321,7 +336,7 @@ em { font-style: italic; }
 
 .gl {
   position: relative;
-  height: 320vh;             /* scroll distance that walks the whole strip */
+  height: 210vh;             /* scroll distance that walks the whole strip */
   background: var(--ivory);
 }
 .gl__sticky {
@@ -351,7 +366,7 @@ em { font-style: italic; }
 }
 
 @media (max-width: 620px) {
-  .gl { height: 260vh; }
+  .gl { height: 175vh; }
   .filter--view { margin-left: 0; }
 }
 
@@ -468,7 +483,7 @@ em { font-style: italic; }
 .hp { position: absolute; left: -9999px; opacity: 0; height: 0; }
 
 /* ── Footer ──────────────────────────────────────────────── */
-.footer { background: var(--ink); color: var(--ivory); padding: 3rem var(--gut); border-top: 1px solid rgba(247,243,236,.12); }
+.footer { background: var(--ink); color: var(--ivory); padding: 1.75rem var(--gut); border-top: 1px solid rgba(247,243,236,.12); }
 .footer__inner { max-width: var(--maxw); margin: 0 auto; display: flex; flex-wrap: wrap; gap: 1.5rem 2.5rem; align-items: center; }
 .footer nav { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-left: auto; }
 .footer nav a { font-size: .88rem; text-decoration: none; color: rgba(247,243,236,.75); }

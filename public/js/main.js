@@ -208,44 +208,16 @@ $$("[data-photo]").forEach(el => {
 });
 
 /* ── Contact form ─────────────────────────────────────────────
-   Where enquiries go. A static site has no server, so it can't put
-   mail on the wire itself. Two modes:
-
-   1. No form service configured (now): submitting opens the
-      visitor's own mail app with everything filled in and addressed.
-      Works with zero setup, and nothing can be silently swallowed —
-      the visitor watches their own client send it.
-   2. A real Formspree endpoint in the form's action: it posts in the
-      background instead and never leaves the page. Strictly nicer;
-      needs a free account. See README step 3.
+   Posts to the service named in the form's action and never leaves
+   the page. No address is published anywhere on the site, so if this
+   ever fails the visitor is asked to retry rather than pointed at an
+   inbox — see README step 3 for the endpoint setup.
 ------------------------------------------------------------ */
-// Forwards to the personal inbox via Cloudflare Email Routing, so the private
-// address never appears on a public page.
-const CONTACT_EMAIL = "hello@thadtakesphotos.com";
-
 const form   = $("#contact-form");
 const status = $("#form-status");
 
 form.addEventListener("submit", async e => {
   e.preventDefault();
-
-  if (form.action.includes("YOUR_FORM_ID")) {
-    const name    = $("#name", form).value.trim();
-    const from    = $("#email", form).value.trim();
-    const message = $("#message", form).value.trim();
-
-    const subject = name ? `Session enquiry — ${name}` : "Session enquiry";
-    const body    = `${message}\n\n—\n${name}\n${from}`;
-
-    location.href = `mailto:${CONTACT_EMAIL}`
-                  + `?subject=${encodeURIComponent(subject)}`
-                  + `&body=${encodeURIComponent(body)}`;
-
-    status.className = "form__status is-ok";
-    status.innerHTML = `Opening your email app… if nothing happens, write to `
-                     + `<a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.`;
-    return;
-  }
 
   const button = $("button[type=submit]", form);
   const label = button.textContent;
@@ -268,8 +240,7 @@ form.addEventListener("submit", async e => {
     status.textContent = "Got it — thanks. I'll be in touch.";
   } catch (err) {
     status.className = "form__status is-err";
-    status.innerHTML = `Something went wrong sending that. Email me directly at `
-                     + `<a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.`;
+    status.textContent = "That didn't send. Please try again, or reach me on Instagram.";
   } finally {
     button.disabled = false;
     button.textContent = label;

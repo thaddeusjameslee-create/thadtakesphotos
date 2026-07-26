@@ -1,9 +1,38 @@
 # Cloudflare Pages / Netlify header rules
 
+# ── Security ─────────────────────────────────────────────────
+# A static site has no database, no login, no server-side code — so the
+# attacks that matter here are content injection, clickjacking, and
+# downgrade-to-HTTP. These headers close those off.
+#
+# Content-Security-Policy is the important one: it names every place the
+# browser is permitted to load anything from, and refuses the rest. If
+# someone ever managed to inject a <script> into the HTML, it would not
+# execute, because it wouldn't match the hash below.
+#
+# CAREFUL: the 'sha256-...' value is the hash of the one inline script in
+# index.html:
+#     document.documentElement.classList.add("js");
+# Change that line by even a character and the browser will refuse to run
+# it — which would leave every scroll-reveal element invisible. Recompute
+# with:
+#     node -e "console.log(require('crypto').createHash('sha256').update(process.argv[1]).digest('base64'))" 'SCRIPT TEXT HERE'
+#
+# HSTS starts at one day on purpose. It tells browsers to refuse plain HTTP
+# for this domain, which is good — but they cache that instruction, so if a
+# certificate ever broke, the site would be unreachable for the full duration
+# with no way to click past. One day means a bad day, not a bad year. Once
+# it's been running happily for a few weeks, raise it to 31536000. Only add
+# `preload` if you're certain, because that one is effectively permanent.
+
 /*
+  Content-Security-Policy: default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'sha256-WZRJfWvsnNCPcxzZwvyhovnZGqhZaC+8gPGPRbx6wTk='; connect-src 'self' https://formspree.io; form-action https://formspree.io; upgrade-insecure-requests
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  X-Frame-Options: SAMEORIGIN
+  X-Frame-Options: DENY
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), midi=(), magnetometer=(), accelerometer=(), gyroscope=()
+  Strict-Transport-Security: max-age=86400
 
 # ── While you're still building ──────────────────────────────
 # Short caches, so a photo or a CSS tweak shows up on the next reload

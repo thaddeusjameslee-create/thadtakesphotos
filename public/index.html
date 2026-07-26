@@ -33,7 +33,6 @@
   "name": "Thad Takes Photos",
   "description": "Senior portrait photography.",
   "url": "https://thadtakesphotos.com",
-  "email": "hello@thadtakesphotos.com",
   "sameAs": ["https://instagram.com/thadtakesphotos"]
 }
 </script>
@@ -48,6 +47,19 @@
     <nav class="nav__links" aria-label="Main">
       <a href="#work">Work</a>
     </nav>
+    <!-- Sits outside nav__links so it stays visible on mobile, where the text
+         links collapse into the menu. Inline SVG rather than an icon font: no
+         extra request, and it inherits the nav's colour as it scrolls. -->
+    <a class="nav__ig" href="https://instagram.com/thadtakesphotos"
+       rel="me noopener" target="_blank" aria-label="Instagram (opens in a new tab)">
+      <svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true" focusable="false">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5.4"
+              fill="none" stroke="currentColor" stroke-width="1.9"/>
+        <circle cx="12" cy="12" r="4.3"
+                fill="none" stroke="currentColor" stroke-width="1.9"/>
+        <circle cx="17.4" cy="6.6" r="1.25" fill="currentColor"/>
+      </svg>
+    </a>
     <button class="nav__toggle" aria-expanded="false" aria-controls="nav-mobile" aria-label="Open menu">
       <span></span><span></span><span></span>
     </button>
@@ -112,7 +124,6 @@
         <h2>Get in touch</h2>
         <p class="lede">Send me a note and I'll get back to you.</p>
         <ul class="book__contact">
-          <li><a href="mailto:hello@thadtakesphotos.com">hello@thadtakesphotos.com</a></li>
           <li><a href="https://instagram.com/thadtakesphotos" rel="me noopener" target="_blank">@thadtakesphotos</a></li>
         </ul>
       </div>
