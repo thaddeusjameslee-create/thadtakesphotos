@@ -219,7 +219,9 @@ $$("[data-photo]").forEach(el => {
       background instead and never leaves the page. Strictly nicer;
       needs a free account. See README step 3.
 ------------------------------------------------------------ */
-const CONTACT_EMAIL = "thaddeusjameslee@gmail.com";
+// Forwards to the personal inbox via Cloudflare Email Routing, so the private
+// address never appears on a public page.
+const CONTACT_EMAIL = "hello@thadtakesphotos.com";
 
 const form   = $("#contact-form");
 const status = $("#form-status");
