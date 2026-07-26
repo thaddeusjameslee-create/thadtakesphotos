@@ -24,7 +24,7 @@ const CFG = {
   // The three portraits circling the camera.
   orbitRadius: 6.9,   // how wide the circle is
   orbitTilt:   0.32,  // lifts the circle into an ellipse rather than a flat ring
-  orbitTurns:  0.55,  // full revolutions across the section — lower is slower
+  orbitTurns:  1,     // full revolutions across the section — lower is slower
   orbitPhase: -Math.PI / 2,  // start with one behind the camera, not in your face
   portraitH:   4.0,   // portrait height in world units
   portraitAR:  0.72,  // width ÷ height — portrait orientation
