@@ -34,10 +34,24 @@ Building it in code rather than importing a model was the deciding factor: an
 exploded view needs parts that were never merged into one mesh, and most
 downloadable camera models are a single blob.
 
+Three portraits orbit it on an inclined ring. They read `photos/portrait-01.jpg`
+through `-03.jpg`; drop real files at those paths and they replace the
+placeholders with no code change. The panels are 2:3, the native portrait ratio
+out of a DSLR, so your framing isn't cropped to fit them.
+
+Nothing is positioned by hand-tuned numbers. On every resize the code measures
+the model's fully-exploded bounding radius from the geometry, sizes the camera
+to fit the frame, then places the ring *outside* that radius plus `clearance`.
+Deriving the ring from the camera and not the other way round is what keeps the
+camera legible on a phone — the reverse lets a narrow frame squeeze the ring,
+which squeezes the camera down to a speck. The cost is that panels swing past
+the frame edges on narrow screens, which is intentional.
+
 Tuning lives in the `CFG` block at the top — `spread` for how far parts fly,
-`spin` for how much it turns, `ease` for how lazily it follows the scroll. The
-part list below that is a plain array; each entry has a resting position and
-the direction it travels when things come apart.
+`spin` for how much it turns, `ease` for how lazily it follows the scroll,
+`clearance` for the gap between the parts and the portraits, `maxScale` for the
+overall size ceiling. The part list below that is a plain array; each entry has
+a resting position and the direction it travels when things come apart.
 
 ## The 3D gallery
 

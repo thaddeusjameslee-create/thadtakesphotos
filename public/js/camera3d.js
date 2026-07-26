@@ -17,10 +17,11 @@ import * as THREE from "./vendor/three.module.min.js";
 const CFG = {
   camZ:       14,     // camera distance
   viewHeight: 11,     // world units visible top to bottom
-  spread:     3.4,    // how far parts fly apart at full explosion
+  spread:     2.6,    // how far parts fly apart at full explosion
   ease:       0.16,   // how tightly it tracks the scroll; higher = snappier
-  maxScale:   0.85,   // ceiling on size, even when there's room to spare
+  maxScale:   0.62,   // ceiling on size, even when there's room to spare
   fitMargin:  0.92,   // fraction of the frame the exploded view may occupy
+  clearance:  0.55,   // gap kept between the flung parts and the portrait ring
   spin:       1.15,   // radians of turntable rotation across the section
 
   // The three portraits circling the camera.
@@ -175,12 +176,20 @@ export function initCamera3D({ section, canvas }) {
      rather than guessed. Bounding spheres are rotation-proof, so a part that
      gets tumbled as it separates can't poke outside what we measured. This is
      what lets resize() pick a scale that provably fits any frame. */
-  let exHalfW = 0, exHalfH = 0;
+  const spreadFactor = CFG.spread / 3.4;   // must match the lerp in apply()
+
+  let exHalfW = 0, exHalfH = 0, exRadius = 0;
   parts.forEach(p => {
     p.mesh.geometry.computeBoundingSphere();
     const reach = p.mesh.geometry.boundingSphere.radius;
-    exHalfW = Math.max(exHalfW, Math.abs(p.away.x) + reach);
-    exHalfH = Math.max(exHalfH, Math.abs(p.away.y) + reach);
+    const at = p.away.clone().multiplyScalar(spreadFactor);
+
+    exHalfW = Math.max(exHalfW, Math.abs(at.x) + reach);
+    exHalfH = Math.max(exHalfH, Math.abs(at.y) + reach);
+    // Distance from the origin in 3D — this is what the orbiting panels have
+    // to stay outside of. The lens stack dominates it: it flies straight
+    // toward the viewer, which is radially outward as far as the ring cares.
+    exRadius = Math.max(exRadius, at.length() + reach);
   });
 
   /* ── Lighting ───────────────────────────────────────────── */
@@ -246,6 +255,7 @@ export function initCamera3D({ section, canvas }) {
   /* ── State ──────────────────────────────────────────────── */
   let W = 0, H = 0;
   let rigScale = 1;
+  let portraitScale = 1;
   let orbitR = CFG.orbitRadius;
   let explode = 0, targetExplode = 0;
   let progress = 0;
@@ -265,39 +275,33 @@ export function initCamera3D({ section, canvas }) {
     camera.updateProjectionMatrix();
 
     const visibleW = CFG.viewHeight * camera.aspect;
+    const limit    = visibleW * 0.5 * CFG.fitMargin;
 
-    // Scale so the fully exploded model fits the frame on both axes, instead
-    // of flipping between two hardcoded sizes at aspect 1.0. That switch left
-    // a narrow-but-landscape window at full size with nothing trimmed, and
-    // jumped discontinuously the moment the window crossed square.
-    const fitW = (visibleW * 0.5 * CFG.fitMargin) / exHalfW;
+    /* Panels are sized from the frame, not from the camera's scale. The ring
+       wants to stay as wide as the frame allows — shrinking it in step with
+       the camera would defeat the whole point of separating them. */
+    const panelScale = Math.min(1, visibleW / 16);
+    const panelW = CFG.portraitH * CFG.portraitAR * panelScale;
+    portraitScale = panelScale;
+
+    /* Size the camera first, from the frame alone: the fully exploded model
+       has to fit on both axes. */
+    const fitW = limit / exHalfW;
     const fitH = (CFG.viewHeight * 0.5 * CFG.fitMargin) / exHalfH;
     rigScale = Math.min(CFG.maxScale, fitW, fitH);
     rig.scale.setScalar(rigScale);
 
-    /* Orbit radius is solved, not guessed. A flat fraction of the frame width
-       can't work: the panels swing toward the viewer as they go round, and
-       perspective magnifies them exactly when they're also furthest off
-       centre. The push they get at full explosion has to be paid for up front
-       too, or they'd overflow at the midpoint of the animation. */
-    const panelW = CFG.portraitH * CFG.portraitAR * rigScale;
-    const limit  = visibleW * 0.5 * CFG.fitMargin;
+    /* Then put the ring outside it. Deriving the ring from the camera — rather
+       than the camera from the ring — is the whole trick. The other way round,
+       a narrow phone frame forces a small ring, which forces a camera so tiny
+       it disappears. This way the camera stays legible at any width and the
+       ring simply moves out to clear it.
 
-    const reachOf = r => {
-      let worst = 0;
-      for (let i = 0; i < 72; i++) {
-        const a = (i / 72) * Math.PI * 2;
-        const z = Math.sin(a) * r;
-        const persp = CFG.camZ / Math.max(CFG.camZ - z, 0.5);
-        worst = Math.max(worst, (Math.abs(Math.cos(a)) * r + panelW / 2) * persp);
-      }
-      return worst;
-    };
-
-    let r = CFG.orbitRadius * rigScale;
-    for (let i = 0; i < 16 && reachOf(r) > limit; i++) r *= limit / reachOf(r);
-
-    orbitR = Math.max(r - CFG.portraitPush * rigScale, panelW * 0.6);
+       exRadius is the model's fully-exploded bounding radius, so subtracting
+       the push it hasn't received yet leaves a resting radius that still keeps
+       its distance at the moment the parts are flung furthest. */
+    const needed = exRadius * rigScale + CFG.clearance + panelW / 2;
+    orbitR = Math.max(needed - CFG.portraitPush, panelW * 0.75);
   }
 
   function readProgress() {
@@ -320,7 +324,7 @@ export function initCamera3D({ section, canvas }) {
 
   function apply() {
     parts.forEach(part => {
-      part.mesh.position.lerpVectors(part.home, part.away, explode * (CFG.spread / 3.4));
+      part.mesh.position.lerpVectors(part.home, part.away, explode * spreadFactor);
 
       // Parts tumble slightly as they separate, then settle square again.
       part.mesh.rotation.x = part.baseRot.x + explode * 0.22;
@@ -334,7 +338,7 @@ export function initCamera3D({ section, canvas }) {
     // reads as an ellipse in perspective instead of a flat ring edge-on. The
     // circle also widens as the camera comes apart, so the two motions don't
     // fight for the same space.
-    const radius = orbitR + explode * CFG.portraitPush * rigScale;
+    const radius = orbitR + explode * CFG.portraitPush;
 
     orbiters.forEach(({ group }, i) => {
       const a = CFG.orbitPhase
@@ -346,7 +350,7 @@ export function initCamera3D({ section, canvas }) {
         Math.sin(a) * CFG.orbitTilt * radius,
         Math.sin(a) * radius
       );
-      group.scale.setScalar(rigScale);
+      group.scale.setScalar(portraitScale);
       group.lookAt(camera.position);   // keep them square to the viewer
     });
   }
