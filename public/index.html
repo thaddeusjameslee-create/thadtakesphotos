@@ -24,16 +24,17 @@
      alive, so the page is never blank for a crawler or a no-script browser. -->
 <script>document.documentElement.classList.add("js");</script>
 
-<!-- Deliberately minimal. Add "areaServed" (your city/region), "priceRange",
-     "telephone" and "sameAs" (your Instagram URL) once those are real — that's
-     what feeds "senior photographer near me" results. Don't guess at them. -->
+<!-- Still missing "areaServed" (your city/region) and "priceRange" — those are
+     what feed "senior photographer near me" results. Don't guess at them. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
   "name": "Thad Takes Photos",
   "description": "Senior portrait photography.",
-  "url": "https://thadtakesphotos.com"
+  "url": "https://thadtakesphotos.com",
+  "email": "thaddeusjameslee@gmail.com",
+  "sameAs": ["https://instagram.com/thadtakesphotos"]
 }
 </script>
 </head>
@@ -110,11 +111,17 @@
       <div class="book__intro reveal">
         <h2>Get in touch</h2>
         <p class="lede">Send me a note and I'll get back to you.</p>
+        <ul class="book__contact">
+          <li><a href="mailto:thaddeusjameslee@gmail.com">thaddeusjameslee@gmail.com</a></li>
+          <li><a href="https://instagram.com/thadtakesphotos" rel="me noopener" target="_blank">@thadtakesphotos</a></li>
+        </ul>
       </div>
 
-      <!-- TODO: replace action with your real Formspree endpoint — see README
-           step 3. Until then the form reports that it isn't connected rather
-           than silently swallowing messages. -->
+      <!-- A static site can't send mail on its own. Until a form service is
+           wired up, submitting hands the message to the visitor's own mail app,
+           already addressed and filled in — see the handler in js/main.js.
+           To upgrade: swap this action for a real Formspree endpoint and the
+           form posts in the background instead. README step 3. -->
       <form class="form reveal" id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
         <div class="field">
           <label for="name">Your name</label>
@@ -143,6 +150,7 @@
     <nav aria-label="Footer">
       <a href="#work">Work</a>
       <a href="#contact">Get in touch</a>
+      <a href="https://instagram.com/thadtakesphotos" rel="me noopener" target="_blank">Instagram</a>
     </nav>
     <p class="footer__legal">© <span id="year">2026</span> Thad Takes Photos</p>
   </div>

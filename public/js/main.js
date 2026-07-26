@@ -207,7 +207,20 @@ $$("[data-photo]").forEach(el => {
   probe.src = el.dataset.photo;
 });
 
-/* ── Contact form (AJAX so the page never navigates away) ── */
+/* ── Contact form ─────────────────────────────────────────────
+   Where enquiries go. A static site has no server, so it can't put
+   mail on the wire itself. Two modes:
+
+   1. No form service configured (now): submitting opens the
+      visitor's own mail app with everything filled in and addressed.
+      Works with zero setup, and nothing can be silently swallowed —
+      the visitor watches their own client send it.
+   2. A real Formspree endpoint in the form's action: it posts in the
+      background instead and never leaves the page. Strictly nicer;
+      needs a free account. See README step 3.
+------------------------------------------------------------ */
+const CONTACT_EMAIL = "thaddeusjameslee@gmail.com";
+
 const form   = $("#contact-form");
 const status = $("#form-status");
 
@@ -215,8 +228,20 @@ form.addEventListener("submit", async e => {
   e.preventDefault();
 
   if (form.action.includes("YOUR_FORM_ID")) {
-    status.className = "form__status is-err";
-    status.textContent = "Form isn't connected yet — see step 3 in the README.";
+    const name    = $("#name", form).value.trim();
+    const from    = $("#email", form).value.trim();
+    const message = $("#message", form).value.trim();
+
+    const subject = name ? `Session enquiry — ${name}` : "Session enquiry";
+    const body    = `${message}\n\n—\n${name}\n${from}`;
+
+    location.href = `mailto:${CONTACT_EMAIL}`
+                  + `?subject=${encodeURIComponent(subject)}`
+                  + `&body=${encodeURIComponent(body)}`;
+
+    status.className = "form__status is-ok";
+    status.innerHTML = `Opening your email app… if nothing happens, write to `
+                     + `<a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.`;
     return;
   }
 
@@ -240,9 +265,9 @@ form.addEventListener("submit", async e => {
     status.className = "form__status is-ok";
     status.textContent = "Got it — thanks. I'll be in touch.";
   } catch (err) {
-    // No fallback address here until there's a real one to publish.
     status.className = "form__status is-err";
-    status.textContent = "Something went wrong sending that. Please try again.";
+    status.innerHTML = `Something went wrong sending that. Email me directly at `
+                     + `<a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.`;
   } finally {
     button.disabled = false;
     button.textContent = label;
