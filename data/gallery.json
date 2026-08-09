@@ -1,0 +1,24 @@
+{
+  "_comment": "Gallery contents. Add an entry per photograph, drop the .jpg and .webp into public/photos/, then run `node tools/build.mjs`. Alt text should describe the subject and the setting — name South Valley Park only where it is actually the location.",
+
+  "photos": [
+    {
+      "base": "portrait-01",
+      "width": 1000,
+      "height": 1500,
+      "alt": "High school senior in a black dress standing in tall summer grass, foothills catching the last light behind her"
+    },
+    {
+      "base": "portrait-02",
+      "width": 1000,
+      "height": 1500,
+      "alt": "Senior portrait seated in dry meadow grass at South Valley Park, the sunlit hogback ridges rising behind"
+    },
+    {
+      "base": "portrait-03",
+      "width": 1000,
+      "height": 1500,
+      "alt": "Senior holding a single pink rose in an open meadow at South Valley Park, red rock formations in the distance"
+    }
+  ]
+}

@@ -1,202 +1,93 @@
 # thadtakesphotos.com
 
-Static site — plain HTML, CSS, and JavaScript. No build step, no dependencies,
-no framework. Open `index.html` in a browser and it just works.
+Static site — plain HTML, CSS, and a little JavaScript. No framework, no
+bundler, no runtime dependencies. Three pages, dark theme.
 
 ```
+data/
+  gallery.json              the photographs and their alt text
+  pricing.json              every price and every word of pricing copy
+tools/
+  build.mjs                 generates page content from the two data files
 public/                     ← everything in here is public, nothing else is
-  index.html                all the page copy lives here
-  css/styles.css            all the styling
-  js/main.js                photo list + interactions + 3D loading
-  js/camera3d.js            the scroll-driven exploded camera
-  js/gallery3d.js           the scroll-driven 3D photo strip
-  vendor/                   Three.js, vendored so the site depends on nobody
-                            (outside js/ on purpose — see _headers)
-  photos/                   your images (see PHOTOS.md)
-  _headers                  cache + security headers
-
-wrangler.toml               deploy config — read the warning in it
-PHOTOS.md                   naming + export guide for your photos
-README.md                   this file
+  index.html                home: name, tagline, gallery, contact
+  pricing/index.html        generated between markers from data/pricing.json
+  about/index.html          hand-written
+  css/styles.css            all styling; palette at the top in one :root block
+  js/main.js                contact form + footer year, and nothing else
+  photos/                   .jpg and .webp pairs
+  _headers                  security + cache headers
+wrangler.toml               deploy config
 ```
 
-The `public/` split isn't decoration. Only that folder is uploaded, so this
-README, the deploy config, and your git history physically cannot end up on
-the web — no filter rule to get wrong.
+## Editing content
 
-## The exploded camera
+**Prices and pricing copy** live in `data/pricing.json`.
+**Photographs and alt text** live in `data/gallery.json`.
 
-A stylised SLR built entirely from Three.js primitives in `js/camera3d.js` —
-twenty separate parts, no downloaded model. Scrolling its section takes it from
-assembled, out to an exploded view at the halfway point, and back together by
-the end. The out-and-back comes from a single sine over the scroll progress.
-
-Building it in code rather than importing a model was the deciding factor: an
-exploded view needs parts that were never merged into one mesh, and most
-downloadable camera models are a single blob.
-
-Three portraits orbit it on an inclined ring. They read `photos/portrait-01.jpg`
-through `-03.jpg`; drop real files at those paths and they replace the
-placeholders with no code change. The panels are 2:3, the native portrait ratio
-out of a DSLR, so your framing isn't cropped to fit them.
-
-Nothing is positioned by hand-tuned numbers. On every resize the code measures
-the model's fully-exploded bounding radius from the geometry, sizes the camera
-to fit the frame, then places the ring *outside* that radius plus `clearance`.
-Deriving the ring from the camera and not the other way round is what keeps the
-camera legible on a phone — the reverse lets a narrow frame squeeze the ring,
-which squeezes the camera down to a speck. The cost is that panels swing past
-the frame edges on narrow screens, which is intentional.
-
-Tuning lives in the `CFG` block at the top — `spread` for how far parts fly,
-`spin` for how much it turns, `ease` for how lazily it follows the scroll,
-`clearance` for the gap between the parts and the portraits, `maxScale` for the
-overall size ceiling. The part list below that is a plain array; each entry has
-a resting position and the direction it travels when things come apart.
-
-## The 3D gallery
-
-Photos ride a curved, infinitely-looping strip. Scrolling the page walks it
-sideways, you can grab and fling it, and clicking a photo opens the lightbox.
-The warping and colour-fringing as it moves are a custom shader in
-`js/gallery3d.js`.
-
-It is strictly an **enhancement**. The plain masonry grid is the real content —
-it's what search engines read and what keyboard users get. The strip only
-appears when the browser can actually drive it, and the site sits out
-automatically when:
-
-- the visitor has "reduce motion" turned on in their OS
-- WebGL is unavailable
-- the device reports 2 or fewer CPU cores, or under 4 GB of RAM
-- Three.js fails to load for any reason
-
-In all those cases the grid stays on screen and nothing looks broken. There's
-also a **Grid view** toggle next to the filters so anyone can switch back by hand.
-
-Three.js is ~180 KB over the wire and isn't fetched until the visitor scrolls
-within 600px of the gallery, so it costs nothing on page load.
-
-**Tuning it:** the `CFG` block at the top of `js/gallery3d.js` controls the look —
-`curve` (how far the strip bows), `twist` (how much photos turn), `ease` (inertia;
-lower is floatier), `gapFactor` (spacing), and `aspect` (photo shape). Change a
-number, reload, look. The scroll distance is `.gl { height: 320vh }` in the CSS —
-raise it to slow the travel down, lower it to speed it up.
-
-**Turning it off entirely:** delete the `if (canRun3D())` block at the bottom of
-`js/main.js`. Everything else keeps working.
-
----
-
-## Your to-do list
-
-### 1. Buy the domain
-
-Cloudflare Registrar sells `.com` at cost (~$10/yr, no markup, no upsells, free
-WHOIS privacy) and it puts the domain and the hosting in the same dashboard:
-<https://dash.cloudflare.com> → Domain Registration → Register Domain.
-
-Namecheap or Porkbun are fine too — you'll just point the nameservers at
-Cloudflare afterward.
-
-### 2. Add your photos
-
-See [`PHOTOS.md`](PHOTOS.md). The site renders fine without them,
-so you can deploy first and add photos as you shoot.
-
-### 3. Connect the contact form
-
-A static site has no server, so nothing in it can put mail on the wire. The
-form therefore has two modes, and it picks automatically:
-
-**Now — mail-app handoff.** While the action below still says `YOUR_FORM_ID`,
-submitting opens the visitor's own mail client with the message addressed and
-filled in. Zero setup, nothing can be silently swallowed. Clunkier, and does
-nothing for someone on desktop webmail with no default mail app.
-
-**Better — a real submit.** Sign up at [Formspree](https://formspree.io) (free
-tier: 50 submissions/month), create a form, and paste its endpoint over
-`YOUR_FORM_ID` in the `action` of `#contact-form` in `index.html`. That's the
-only change — `js/main.js` detects it and switches to a background POST that
-never leaves the page.
-
-The form already sends the fields Formspree expects:
-
-| Field | Purpose |
-|---|---|
-| `email` | the visitor's address — Formspree makes it the reply-to, so hitting reply in Gmail answers them |
-| `_subject` | subject line of the email that reaches you |
-| `_gotcha` | honeypot; bots fill hidden fields, humans don't, filled ones get discarded |
-
-**Other options considered:** Cloudflare's own Email Sending would avoid a third
-party entirely, but it requires the Workers Paid plan ($5/mo). Web3Forms is free
-and unlimited with no account, just a smaller company.
-
-### 4. Add real content
-
-The page has been stripped back to only what's true: the name, the fact that
-it's senior portrait photography, an empty gallery, and a contact form. Every
-invented placeholder is gone.
-
-Removed, and worth adding back once each one is real:
-
-| Section | What it needs from you |
-|---|---|
-| Packages | Your actual prices and what's included |
-| About | Your bio, in your words |
-| FAQ | Your real policies — booking lead time, rain, turnaround, deposit |
-| Testimonials | Genuine client quotes. Ask right after you deliver a gallery |
-| Hero tagline | A line that sounds like you |
-| Instagram / email | Real handle and inbox |
-| `areaServed` in the JSON-LD | Your city — this is what drives "senior photographer near me" |
-
-**Nothing is lost.** All of it is in git — `git show f92cd47:public/index.html`
-prints the previous full version, and you can copy any section straight out of
-it. Restore by pasting it back and editing the text to be true.
-
-### 5. Deploy
-
-The site is already live at <https://thadtakesphotos.com>, served by a Cloudflare
-Worker named `black-butterfly-1273`. Three ways to update it, in order of how
-little thinking they require.
-
-**a) One command (set up, works now):**
+After editing either:
 
 ```bash
-npx wrangler deploy
+node tools/build.mjs
 ```
 
-Run it from this folder. First time it opens a browser to log in to Cloudflare;
-after that it's instant. It reads `wrangler.toml`, uploads `public/`, and
-replaces the live site. Roughly ten seconds.
+That rewrites the marked regions of `public/pricing/index.html` and
+`public/index.html`. Commit the regenerated HTML along with the data change.
 
-**b) Push to deploy (the automatic one):**
+Why a generator instead of loading JSON in the browser: the prices and the
+photographs need to be in the HTML that Google and link previews read.
+Rendering them client-side would leave the page empty to anything that doesn't
+run JavaScript.
 
-Once this repo is on GitHub, connect it in the dashboard:
+**The markers are load-bearing.** Don't hand-edit between
+`<!-- pricing:start -->` / `<!-- pricing:end -->` or
+`<!-- gallery:start -->` / `<!-- gallery:end -->` — the next build overwrites it.
 
-> Your Worker → **Settings** → **Build** → **Connect** → pick the repo
+## Adding photographs
 
-Set **deploy command** to `npx wrangler deploy` and leave the build command
-empty — there's nothing to build. From then on every `git push` to `main`
-redeploys by itself, and each push shows up in the Deployments tab.
+1. Export at 1000×1500 (2:3), under 300KB.
+2. Save both a `.jpg` and a `.webp` into `public/photos/`.
+3. Add an entry to `data/gallery.json` with `base`, `width`, `height`, `alt`.
+4. Run `node tools/build.mjs`.
 
-**c) Drag-and-drop:** still works — **New deployment** in the dashboard — but
-drag the **`public/` folder**, not the project root. Dragging the root would
-publish `wrangler.toml` and this README.
+Alt text should describe the subject and the setting. Name South Valley Park
+only where it's actually the location. The grid is CSS columns, so it stays
+composed whether there are six photographs or sixty; new ones flow into the
+shortest column instead of leaving gaps.
 
-### Rolling back
+## The palette
 
-Every deploy is kept. Worker → **Deployments** → find a known-good one →
-**Rollback**. Takes seconds and doesn't need your local files to be in any
-particular state, which is the real reason to deploy early and often.
+Every colour is declared once, in the `:root` block at the top of
+`public/css/styles.css`. Nothing else hardcodes a colour.
 
----
+The accent (`--accent: #dcb06d`) was sampled from the sunlit hogbacks in
+`portrait-02` and `portrait-03` — the warmest quartile of roughly 262,000 lit
+pixels, averaged. It's used only for links, focus rings, the active nav item,
+and one hairline under the logotype. Never for fills.
 
-## Working on it locally
+All fourteen text/background pairs were checked against WCAG AA. If you change
+the palette, re-check them — `--field-border` in particular is deliberately
+lighter than `--line` because form fields are interactive and have to clear 3:1
+against both the page and their own fill. At `--line`'s value they measured
+1.31:1 and read as invisible boxes.
+
+## Deploying
+
+Push to `main`. Cloudflare builds and deploys automatically, usually within a
+minute. Every deploy is kept — Worker → Deployments → Rollback.
+
+**If you edit a data file, run the build before pushing.** Cloudflare's build
+command is currently empty, so it deploys whatever HTML is committed. Setting
+the build command to `node tools/build.mjs` would remove that footgun.
+
+## Local preview
 
 ```bash
 npx --yes serve --listen 4321 public
 ```
 
-Then open <http://localhost:4321>. Note the `public` on the end — serving the
-project root instead would give you a file listing rather than the site.
+## Outstanding
+
+- `{{TODO: bio}}` — two placeholder paragraphs in `public/about/index.html`
+- `{{TODO: about portrait}}` — drop `about-portrait.jpg` + `.webp` (1000×1500) into `public/photos/`
+- The homepage share image is an interim crop of `portrait-01`. Swap it for the violin portrait when that exists.

@@ -3,137 +3,137 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Thad Takes Photos — Senior Portrait Photography</title>
-<meta name="description" content="Senior portrait photography by Thad.">
+<title>Senior Portrait Photography in Jefferson County, CO — Thad Takes Photos</title>
+<meta name="description" content="Senior portrait photography in Jefferson County, Colorado. One-hour sessions at South Valley Park and around the Denver foothills, from $100.">
 <link rel="canonical" href="https://thadtakesphotos.com/">
+<meta name="theme-color" content="#1a1714">
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://thadtakesphotos.com/">
-<meta property="og:title" content="Thad Takes Photos">
-<meta property="og:description" content="Senior portrait photography by Thad.">
-<meta property="og:image" content="https://thadtakesphotos.com/photos/og.jpg">
+<meta property="og:title" content="Senior Portrait Photography in Jefferson County, CO — Thad Takes Photos">
+<meta property="og:description" content="Senior portrait photography in Jefferson County, Colorado. One-hour sessions at South Valley Park and around the Denver foothills, from $100.">
+<meta property="og:image" content="https://thadtakesphotos.com/photos/og-home.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://thadtakesphotos.com/photos/og-home.jpg">
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css">
-<!-- Scroll-reveal hides elements until they animate in. Gate that on JS being
-     alive, so the page is never blank for a crawler or a no-script browser. -->
-<script>document.documentElement.classList.add("js");</script>
+<link rel="stylesheet" href="/css/styles.css">
 
-<!-- Still missing "areaServed" (your city/region) and "priceRange" — those are
-     what feed "senior photographer near me" results. Don't guess at them. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
   "name": "Thad Takes Photos",
-  "description": "Senior portrait photography.",
+  "description": "Senior portrait photography in Jefferson County, Colorado.",
   "url": "https://thadtakesphotos.com",
+  "image": "https://thadtakesphotos.com/photos/og-home.jpg",
+  "priceRange": "$",
+  "areaServed": {
+    "@type": "AdministrativeArea",
+    "name": "Jefferson County, Colorado"
+  },
   "sameAs": ["https://instagram.com/thadtakesphotos"]
 }
 </script>
 </head>
 <body>
 
-<a class="skip-link" href="#work">Skip to gallery</a>
+<a class="skip-link" href="#work">Skip to the photographs</a>
 
-<header class="nav nav--top" id="nav">
+<header class="nav">
   <div class="nav__inner">
-    <a class="nav__brand" href="#top">thad<span>takes</span>photos</a>
+    <a class="nav__brand" href="/">thad<span>takes</span>photos</a>
     <nav class="nav__links" aria-label="Main">
-      <a href="#work">Work</a>
+      <a href="/" aria-current="page">Work</a>
+      <a href="/pricing/">Pricing</a>
+      <a href="/about/">About</a>
     </nav>
-    <!-- Sits outside nav__links so it stays visible on mobile, where the text
-         links collapse into the menu. Inline SVG rather than an icon font: no
-         extra request, and it inherits the nav's colour as it scrolls. -->
     <a class="nav__ig" href="https://instagram.com/thadtakesphotos"
        rel="me noopener" target="_blank" aria-label="Instagram (opens in a new tab)">
-      <svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true" focusable="false">
-        <rect x="2.5" y="2.5" width="19" height="19" rx="5.4"
-              fill="none" stroke="currentColor" stroke-width="1.9"/>
-        <circle cx="12" cy="12" r="4.3"
-                fill="none" stroke="currentColor" stroke-width="1.9"/>
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5.4" fill="none" stroke="currentColor" stroke-width="1.9"/>
+        <circle cx="12" cy="12" r="4.3" fill="none" stroke="currentColor" stroke-width="1.9"/>
         <circle cx="17.4" cy="6.6" r="1.25" fill="currentColor"/>
       </svg>
     </a>
-    <button class="nav__toggle" aria-expanded="false" aria-controls="nav-mobile" aria-label="Open menu">
-      <span></span><span></span><span></span>
-    </button>
   </div>
-  <nav class="nav__mobile" id="nav-mobile" aria-label="Mobile" hidden>
-    <a href="#work">Work</a>
-  </nav>
 </header>
 
-<main id="top">
+<main>
 
-  <!-- ── HERO ───────────────────────────────────────────── -->
-  <section class="hero">
-    <div class="hero__media" data-photo="photos/hero.jpg" role="img" aria-label="Senior portrait photography"></div>
-    <div class="hero__scrim"></div>
-    <div class="hero__content reveal">
-      <h1>Thaddeus Lee</h1>
-      <p class="hero__sub">Senior portrait photography.</p>
-    </div>
-    <a class="hero__scroll" href="#work" aria-label="Scroll to gallery"><span></span></a>
+  <!-- ── MASTHEAD ───────────────────────────────────────────
+       Type only. No hero photograph — the work is the hero, and it
+       starts immediately below this block. -->
+  <section class="wrap masthead">
+    <h1>Thaddeus Lee</h1>
+    <p class="masthead__tag">
+      Senior portrait photography in Jefferson County, Colorado.
+      Most sessions at South Valley Park.
+    </p>
   </section>
 
-  <!-- ── CAMERA ─────────────────────────────────────────────
-       Scroll-driven exploded view, built from primitives in
-       js/camera3d.js. Hidden until the script confirms the
-       device can run it. -->
-  <section class="rig" id="camera-section" hidden>
-    <div class="rig__sticky">
-      <canvas class="rig__canvas" id="camera-canvas"></canvas>
+  <!-- ── WORK ───────────────────────────────────────────────
+       Contents come from data/gallery.json via tools/build.mjs.
+       Don't hand-edit between the markers — it gets overwritten. -->
+  <section class="wrap section--tight" id="work" aria-label="Photographs">
+    <div class="gallery">
+      <!-- gallery:start -->
+        <figure class="shot">
+          <picture>
+            <source srcset="/photos/portrait-01.webp" type="image/webp">
+            <img src="/photos/portrait-01.jpg"
+                 alt="High school senior in a black dress standing in tall summer grass, foothills catching the last light behind her"
+                 width="1000" height="1500"
+                 loading="eager"
+                 decoding="async" fetchpriority="high">
+          </picture>
+        </figure>
+        <figure class="shot">
+          <picture>
+            <source srcset="/photos/portrait-02.webp" type="image/webp">
+            <img src="/photos/portrait-02.jpg"
+                 alt="Senior portrait seated in dry meadow grass at South Valley Park, the sunlit hogback ridges rising behind"
+                 width="1000" height="1500"
+                 loading="eager"
+                 decoding="async" fetchpriority="high">
+          </picture>
+        </figure>
+        <figure class="shot">
+          <picture>
+            <source srcset="/photos/portrait-03.webp" type="image/webp">
+            <img src="/photos/portrait-03.jpg"
+                 alt="Senior holding a single pink rose in an open meadow at South Valley Park, red rock formations in the distance"
+                 width="1000" height="1500"
+                 loading="lazy"
+                 decoding="async">
+          </picture>
+        </figure>
+      <!-- gallery:end -->
     </div>
-  </section>
 
-  <!-- ── WORK ───────────────────────────────────────────── -->
-  <section class="section" id="work">
-    <div class="section__head reveal">
-      <h2>Work</h2>
-      <!-- Revealed by js/main.js only once the 3D strip is actually running. -->
-      <button class="viewtoggle" id="view-toggle" aria-pressed="true" hidden>Grid view</button>
-    </div>
-
-    <!-- The gallery builds itself from the PHOTOS list in js/main.js. That list
-         is empty, so an empty state shows instead. Add photos to
-         public/photos/ and entries to that list, and both the grid and the 3D
-         strip come back on automatically. See PHOTOS.md. -->
-    <div class="gallery" id="gallery"></div>
-  </section>
-
-  <!-- ── 3D STRIP ───────────────────────────────────────────
-       Stays hidden until there are photos to put on it. -->
-  <section class="gl" id="gl-section" hidden>
-    <div class="gl__sticky">
-      <canvas class="gl__canvas" id="gl-canvas"></canvas>
-      <p class="gl__caption" id="gl-caption" aria-hidden="true"></p>
-      <p class="gl__hint">Scroll to travel · drag to spin · click to open</p>
-    </div>
+    <p class="gallery__note">
+      Sessions from $100 — <a class="link" href="/pricing/">see pricing</a>.
+    </p>
   </section>
 
   <!-- ── CONTACT ────────────────────────────────────────── -->
-  <section class="section section--book" id="contact">
-    <div class="book">
-      <div class="book__intro reveal">
-        <h2>Get in touch</h2>
-        <p class="lede">Send me a note and I'll get back to you.</p>
-        <ul class="book__contact">
-          <li><a href="https://instagram.com/thadtakesphotos" rel="me noopener" target="_blank">@thadtakesphotos</a></li>
-        </ul>
+  <section class="wrap section" id="contact">
+    <div class="contact">
+      <div>
+        <h2>Ask about a date</h2>
+        <p class="lede">
+          Tell me roughly when you're thinking and I'll come back with what's open.
+          Dates fill first-come.
+        </p>
       </div>
 
-      <!-- Posts to Formspree, which forwards to the inbox configured on that
-           form. A static site has no server of its own, so this is what lets
-           the form submit in the background instead of handing off to the
-           visitor's mail app. If the action is ever reset to a placeholder,
-           js/main.js detects it and falls back to that handoff. README step 3. -->
-      <form class="form reveal" id="contact-form" action="https://formspree.io/f/xeeyvayo" method="POST">
+      <form class="form" id="contact-form" action="https://formspree.io/f/xeeyvayo" method="POST">
         <div class="field">
           <label for="name">Your name</label>
           <input id="name" name="name" type="text" required autocomplete="name">
@@ -143,17 +143,23 @@
           <input id="email" name="email" type="email" required autocomplete="email">
         </div>
         <div class="field field--full">
+          <label for="option">What are you interested in?</label>
+          <!-- Preselected from ?option= by js/main.js. With JS off it simply
+               stays on the blank first entry, which is a valid submission. -->
+          <select id="option" name="option">
+            <option value="">—</option>
+            <option value="session">Session — $100</option>
+            <option value="everything">Session + Everything — $150</option>
+            <option value="unsure">Not sure yet</option>
+          </select>
+        </div>
+        <div class="field field--full">
           <label for="message">Message</label>
           <textarea id="message" name="message" rows="5"></textarea>
         </div>
-        <!-- Formspree reads these. _subject sets the subject line of the email
-             that reaches you; _gotcha is a honeypot — bots fill hidden fields,
-             humans can't see it, and anything with it filled is discarded. The
-             visitor's own address goes in `email` above, which Formspree uses
-             as the reply-to, so hitting reply in Gmail answers them directly. -->
         <input type="hidden" name="_subject" value="New enquiry via thadtakesphotos.com">
         <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp">
-        <button class="btn btn--block" type="submit">Send</button>
+        <button class="btn btn--block" type="submit">Send message</button>
         <p class="form__status" id="form-status" role="status" aria-live="polite"></p>
       </form>
     </div>
@@ -163,27 +169,20 @@
 
 <footer class="footer">
   <div class="footer__inner">
-    <a class="nav__brand" href="#top">thad<span>takes</span>photos</a>
+    <a class="nav__brand" href="/">thad<span>takes</span>photos</a>
     <nav aria-label="Footer">
-      <a href="#work">Work</a>
-      <a href="#contact">Get in touch</a>
+      <a href="/">Work</a>
+      <a href="/pricing/">Pricing</a>
+      <a href="/about/">About</a>
+      <a href="#contact">Contact</a>
       <a href="https://instagram.com/thadtakesphotos" rel="me noopener" target="_blank">Instagram</a>
     </nav>
-    <p class="footer__legal">© <span id="year">2026</span> Thad Takes Photos</p>
+    <p class="footer__legal">
+      © <span id="year">2026</span> Thaddeus Lee · Senior portraits in Jefferson County, Colorado
+    </p>
   </div>
 </footer>
 
-<!-- ── LIGHTBOX ─────────────────────────────────────────── -->
-<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
-  <button class="lightbox__close" aria-label="Close">&times;</button>
-  <button class="lightbox__nav lightbox__nav--prev" aria-label="Previous photo">&#8249;</button>
-  <figure class="lightbox__stage">
-    <img id="lightbox-img" alt="">
-    <figcaption id="lightbox-cap"></figcaption>
-  </figure>
-  <button class="lightbox__nav lightbox__nav--next" aria-label="Next photo">&#8250;</button>
-</div>
-
-<script type="module" src="js/main.js"></script>
+<script type="module" src="/js/main.js"></script>
 </body>
 </html>

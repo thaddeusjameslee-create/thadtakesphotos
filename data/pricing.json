@@ -1,0 +1,59 @@
+{
+  "_comment": "Single source of truth for pricing copy and prices. Edit here, then run `node tools/build.mjs` to regenerate public/pricing/index.html. Nothing else should hardcode a price.",
+
+  "delivery": "Everything is delivered as digital files. I don't sell prints, print packages, wall art, albums, or printed announcement cards, and I don't handle printing or shipping. Your photos are yours to print wherever you like.",
+
+  "booking": "A date is reserved once we've agreed on it by email or Instagram message. Dates fill first-come, and autumn weekends around South Valley Park go earliest.",
+
+  "tiers": [
+    {
+      "id": "session",
+      "name": "Session",
+      "price": "$100",
+      "summary": "One hour, one location, about 20 edited photos.",
+      "includes": [
+        "One hour of shooting",
+        "One location",
+        "About 20 edited photos",
+        "Digital files, yours to print"
+      ],
+      "cta": "Ask about a date",
+      "option": "session",
+      "best": false
+    },
+    {
+      "id": "everything",
+      "name": "Session + Everything",
+      "price": "$150",
+      "summary": "The full session, plus all three add-ons below.",
+      "includes": [
+        "Everything in the session",
+        "10 extra edited photos",
+        "Graduation announcement card",
+        "Instagram carousel"
+      ],
+      "cta": "Ask about a date",
+      "option": "everything",
+      "best": true,
+      "flag": "Better value"
+    }
+  ],
+
+  "addons": [
+    {
+      "name": "10 extra edited photos",
+      "price": "$30",
+      "desc": "Ten more finished frames from the same session."
+    },
+    {
+      "name": "Graduation announcement card",
+      "price": "$30",
+      "desc": "A print-ready digital file you take to your own printer. I don't print or ship cards. Includes one round of revisions."
+    },
+    {
+      "name": "Instagram carousel",
+      "price": "$25",
+      "desc": "A designed multi-image set from your session, sized and ready to post."
+    }
+  ]
+}

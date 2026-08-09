@@ -1,32 +1,19 @@
 # Cloudflare Pages / Netlify header rules
 
 # ── Security ─────────────────────────────────────────────────
-# A static site has no database, no login, no server-side code — so the
-# attacks that matter here are content injection, clickjacking, and
-# downgrade-to-HTTP. These headers close those off.
+# A static site has no database, no login, no server-side code, so the
+# attacks that matter are content injection, clickjacking, and downgrade
+# to plain HTTP. These close those off.
 #
-# Content-Security-Policy is the important one: it names every place the
-# browser is permitted to load anything from, and refuses the rest. If
-# someone ever managed to inject a <script> into the HTML, it would not
-# execute, because it wouldn't match the hash below.
-#
-# CAREFUL: the 'sha256-...' value is the hash of the one inline script in
-# index.html:
-#     document.documentElement.classList.add("js");
-# Change that line by even a character and the browser will refuse to run
-# it — which would leave every scroll-reveal element invisible. Recompute
-# with:
-#     node -e "console.log(require('crypto').createHash('sha256').update(process.argv[1]).digest('base64'))" 'SCRIPT TEXT HERE'
-#
-# HSTS starts at one day on purpose. It tells browsers to refuse plain HTTP
-# for this domain, which is good — but they cache that instruction, so if a
-# certificate ever broke, the site would be unreachable for the full duration
-# with no way to click past. One day means a bad day, not a bad year. Once
-# it's been running happily for a few weeks, raise it to 31536000. Only add
-# `preload` if you're certain, because that one is effectively permanent.
+# script-src is now a bare 'self' — there are no inline scripts left in
+# any page, so no hash or nonce is needed and injected script simply
+# cannot run. If you ever add an inline <script>, it will be blocked
+# until you add its sha256 hash here. That is the intended behaviour.
+# (JSON-LD blocks are type="application/ld+json", never executed, and
+# are unaffected.)
 
 /*
-  Content-Security-Policy: default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'sha256-WZRJfWvsnNCPcxzZwvyhovnZGqhZaC+8gPGPRbx6wTk='; connect-src 'self' https://formspree.io; form-action https://formspree.io; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; connect-src 'self' https://formspree.io; form-action https://formspree.io; upgrade-insecure-requests
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
@@ -34,17 +21,21 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), midi=(), magnetometer=(), accelerometer=(), gyroscope=()
   Strict-Transport-Security: max-age=86400
 
-# ── While you're still building ──────────────────────────────
-# Short caches, so a photo or a CSS tweak shows up on the next reload
-# instead of days later. Costs a little speed, saves a lot of confusion.
+# HSTS is deliberately one day, not one year. It tells browsers to refuse
+# plain HTTP for this domain, and they cache that instruction — so if a
+# certificate ever broke, the site would be unreachable for the full
+# duration with no way to click past. One day means a bad day, not a bad
+# year. Once it has run happily for a few weeks, raise it to 31536000.
+# Only add `preload` if you're certain; that one is effectively permanent.
+
+
+# ── Caching ──────────────────────────────────────────────────
+# Short while the site is still changing, so an edit shows up on the next
+# reload rather than days later. Costs a little speed, saves confusion.
 #
-# Three.js lives at /vendor/, NOT /js/vendor/, and that placement is load
-# bearing. Cloudflare applies every matching rule and concatenates them rather
-# than picking the most specific, so `/js/*` and `/js/vendor/*` would both hit
-# the Three.js files and emit two conflicting max-age values. Keeping the
-# vendored library outside /js/ lets one wildcard cover every script we write —
-# including ones added later, which is how camera3d.js ended up with no rule at
-# all and served two different versions from the edge at the same time.
+# Note Cloudflare applies EVERY matching rule and concatenates them rather
+# than picking the most specific — overlapping globs produce two conflicting
+# Cache-Control values. Keep these patterns non-overlapping.
 
 /photos/*
   Cache-Control: public, max-age=300, must-revalidate
@@ -55,14 +46,10 @@
 /js/*
   Cache-Control: public, max-age=300, must-revalidate
 
-# A pinned version that never changes — cache it hard.
-/vendor/*
-  Cache-Control: public, max-age=31536000, immutable
-
 
 # ── At launch ────────────────────────────────────────────────
-# Once the photos and copy are settled, replace the three blocks above
-# (keep the vendor one as-is) with these. Repeat visits get much faster.
+# Once the photographs and copy settle, swap the three blocks above for
+# these. Repeat visits get much faster.
 #
 # /photos/*
 #   Cache-Control: public, max-age=31536000, immutable
