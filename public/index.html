@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Matches --bg in css/styles.css. Change both together, or the browser
+     chrome on mobile will sit at a different shade than the page. -->
+<meta name="theme-color" content="#14110E">
 <title>Thad Takes Photos — Senior Portrait Photography</title>
 <meta name="description" content="Senior portrait photography by Thad.">
 <link rel="canonical" href="https://thadtakesphotos.com/">
@@ -82,40 +85,17 @@
     <a class="hero__scroll" href="#work" aria-label="Scroll to gallery"><span></span></a>
   </section>
 
-  <!-- ── CAMERA ─────────────────────────────────────────────
-       Scroll-driven exploded view, built from primitives in
-       js/camera3d.js. Hidden until the script confirms the
-       device can run it. -->
-  <section class="rig" id="camera-section" hidden>
-    <div class="rig__sticky">
-      <canvas class="rig__canvas" id="camera-canvas"></canvas>
-    </div>
-  </section>
-
   <!-- ── WORK ───────────────────────────────────────────── -->
   <section class="section" id="work">
     <div class="section__head reveal">
       <h2>Work</h2>
-      <!-- Revealed by js/main.js only once the 3D strip is actually running. -->
-      <button class="viewtoggle" id="view-toggle" aria-pressed="true" hidden>Grid view</button>
     </div>
 
-    <!-- The gallery builds itself from the PHOTOS list in js/main.js. That list
-         is empty, so an empty state shows instead. Add photos to
-         public/photos/ and entries to that list, and both the grid and the 3D
-         strip come back on automatically. See PHOTOS.md. -->
+    <!-- Built from the PHOTOS list at the top of js/main.js. Add a file to
+         public/photos/ and a line to that list — see PHOTOS.md. -->
     <div class="gallery" id="gallery"></div>
   </section>
 
-  <!-- ── 3D STRIP ───────────────────────────────────────────
-       Stays hidden until there are photos to put on it. -->
-  <section class="gl" id="gl-section" hidden>
-    <div class="gl__sticky">
-      <canvas class="gl__canvas" id="gl-canvas"></canvas>
-      <p class="gl__caption" id="gl-caption" aria-hidden="true"></p>
-      <p class="gl__hint">Scroll to travel · drag to spin · click to open</p>
-    </div>
-  </section>
 
   <!-- ── CONTACT ────────────────────────────────────────── -->
   <section class="section section--book" id="contact">

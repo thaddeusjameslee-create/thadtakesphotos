@@ -3,24 +3,25 @@
    ============================================================ */
 
 /* ------------------------------------------------------------
-   1. THE GALLERY LIST  ← this is the part you edit most often.
-   Drop your files in /photos, then add a line here.
+   THE GALLERY LIST  ← the part you edit most often.
+   Drop a file in public/photos/, add a line here, done.
      src   : path to the file
-     alt   : description (also shown under the lightbox)
-     tag   : outdoor | urban | sports | studio   (drives the filters)
-     ratio : height ÷ width, as a %. 125 = portrait, 75 = landscape,
-             100 = square. Only affects the placeholder box before
-             the image loads, so eyeballing it is fine.
+     alt   : what's in the photo — read aloud by screen readers and
+             shown under the lightbox, so describe it properly
+     ratio : height ÷ width as a percent. 150 is a 2:3 portrait
+             straight out of the camera, 125 is a 4:5 crop, 100 is
+             square. It reserves the right amount of space before the
+             image loads, which is what stops the page jumping around.
 ------------------------------------------------------------ */
-// PLACEHOLDERS — these are landscape test shots, not senior portraits.
-// Swap them out as real sessions come in: drop files in public/photos/ and
-// edit the lines below. `ratio` is height ÷ width as a percent, so 75 is a
-// 4:3 landscape and 125 is a portrait. Both the grid and the 3D strip read it.
 const PHOTOS = [
-  { src: "photos/01.jpg", alt: "Sunrise over a snowfield, frost catching the light", ratio: 75 },
-  { src: "photos/02.jpg", alt: "Last light on a rocky ridge above the treeline",     ratio: 75 },
-  { src: "photos/03.jpg", alt: "Sailboats anchored in a harbour at sunset",          ratio: 75 },
-  { src: "photos/04.jpg", alt: "A rainbow over a green mountain valley",             ratio: 75 },
+  { src: "photos/portrait-04.jpg", alt: "Senior in a black dress standing waist-deep in golden summer grass, green foothills rising behind her",  ratio: 66 },
+  { src: "photos/portrait-01.jpg", alt: "Senior in a black dress standing in tall grass below the foothills, backlit by low evening sun",         ratio: 150 },
+  { src: "photos/portrait-06.jpg", alt: "Senior seated in a meadow holding a violin and bow, red rock hogbacks lit gold behind her",              ratio: 66 },
+  { src: "photos/portrait-02.jpg", alt: "Senior seated in dry grass, red sandstone ridges catching the last light in the distance",               ratio: 150 },
+  { src: "photos/portrait-08.jpg", alt: "Close portrait of a senior raising a violin bow to the strings, red rock cliffs soft behind",            ratio: 66 },
+  { src: "photos/portrait-05.jpg", alt: "Senior seated in a summer meadow beneath a cottonwood, hillside and open sky behind",                    ratio: 125 },
+  { src: "photos/portrait-07.jpg", alt: "Senior seen from behind in a lace-back black dress, looking out across the meadow toward the red rocks",  ratio: 66 },
+  { src: "photos/portrait-03.jpg", alt: "Senior holding a pink rose, open grassland and sandstone hills stretching out behind",                   ratio: 150 },
 ];
 
 const $  = (sel, root = document) => root.querySelector(sel);
@@ -34,7 +35,6 @@ PHOTOS.forEach((photo, i) => {
   tile.className = "tile";
   tile.type = "button";
   tile.style.setProperty("--ratio", photo.ratio + "%");
-  tile.dataset.tag = photo.tag;
   tile.dataset.index = i;
   tile.dataset.src = photo.src.replace("photos/", "");
   tile.setAttribute("aria-label", `Open photo: ${photo.alt}`);
@@ -68,23 +68,6 @@ if (PHOTOS.length === 0) {
   gallery.append(empty);
 }
 
-/* ── Filters ─────────────────────────────────────────────── */
-$$(".filter").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const want = btn.dataset.filter;
-
-    $$(".filter").forEach(b => {
-      const on = b === btn;
-      b.classList.toggle("is-active", on);
-      b.setAttribute("aria-selected", String(on));
-    });
-
-    $$(".tile", gallery).forEach(tile => {
-      tile.classList.toggle("is-hidden", want !== "all" && tile.dataset.tag !== want);
-    });
-  });
-});
-
 /* ── Lightbox ────────────────────────────────────────────── */
 const lightbox = $("#lightbox");
 const lbImg    = $("#lightbox-img");
@@ -93,8 +76,7 @@ let lbIndex = 0;
 let lastFocused = null;
 
 function visibleIndexes() {
-  return $$(".tile", gallery).filter(t => !t.classList.contains("is-hidden"))
-                             .map(t => Number(t.dataset.index));
+  return $$(".tile", gallery).map(t => Number(t.dataset.index));
 }
 
 function showPhoto(index) {
@@ -249,93 +231,3 @@ form.addEventListener("submit", async e => {
 
 /* ── Footer year ─────────────────────────────────────────── */
 $("#year").textContent = new Date().getFullYear();
-
-/* ── 3D ──────────────────────────────────────────────────────
-   Two independent WebGL scenes: the exploded camera and the photo
-   strip. Both are strictly enhancements — the page is complete
-   without either, and each is skipped if the device can't drive
-   it or if loading Three.js fails.
------------------------------------------------------------- */
-function canRun3D() {
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
-  // Bail on low-end hardware rather than hand someone a 12fps slideshow.
-  if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2) return false;
-  if (navigator.deviceMemory && navigator.deviceMemory < 4) return false;
-  try {
-    const probe = document.createElement("canvas");
-    return Boolean(probe.getContext("webgl2") || probe.getContext("webgl"));
-  } catch {
-    return false;
-  }
-}
-
-if (canRun3D()) {
-
-  /* ── The exploded camera ───────────────────────────────────
-     Its section sits second on the page, and a `hidden` element has
-     no layout box for an observer to watch — so this loads shortly
-     after the page settles rather than on scroll.
-  ---------------------------------------------------------- */
-  const cameraSection = $("#camera-section");
-
-  // Reveal it NOW, before the module loads. Revealing it later would drop a
-  // couple of screens of content into the page while the visitor is already
-  // scrolling, shoving everything below them and reading as a hard jolt.
-  // Claiming the space up front keeps the page height stable from the start.
-  cameraSection.hidden = false;
-
-  import("./camera3d.js")
-    .then(({ initCamera3D }) => {
-      initCamera3D({ section: cameraSection, canvas: $("#camera-canvas") });
-    })
-    .catch(err => {
-      // Put the space back rather than leave two screens of blank page.
-      cameraSection.hidden = true;
-      console.warn("Camera scene unavailable.", err);
-    });
-
-  /* ── The photo strip ───────────────────────────────────────
-     Only worth loading if there are photos to put on it.
-  ---------------------------------------------------------- */
-  if (PHOTOS.length > 0) {
-    const glSection = $("#gl-section");
-    const toggle3d  = $("#view-toggle");
-
-    const loadStrip = () => import("./gallery3d.js")
-      .then(({ initGallery3D }) => {
-        glSection.hidden = false;
-        document.body.classList.add("has-3d");
-
-        initGallery3D({
-          photos:  PHOTOS,
-          onOpen:  openLightbox,
-          section: glSection,
-          canvas:  $("#gl-canvas"),
-          caption: $("#gl-caption"),
-          filters: $$(".filter[data-filter]")
-        });
-
-        // Guarded: a missing toggle must never take the strip down with it.
-        if (!toggle3d) return;
-        toggle3d.hidden = false;
-        toggle3d.addEventListener("click", () => {
-          const on = document.body.classList.toggle("has-3d");
-          glSection.hidden = !on;
-          toggle3d.textContent = on ? "Grid view" : "3D view";
-          toggle3d.setAttribute("aria-pressed", String(on));
-        });
-      })
-      .catch(err => {
-        // The grid is already on screen, so there's nothing to recover.
-        console.warn("3D strip unavailable, staying with the grid.", err);
-      });
-
-    const trigger = new IntersectionObserver(([entry], obs) => {
-      if (!entry.isIntersecting) return;
-      obs.disconnect();
-      loadStrip();
-    }, { rootMargin: "600px 0px" });
-
-    trigger.observe($("#work"));
-  }
-}

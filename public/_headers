@@ -38,13 +38,10 @@
 # Short caches, so a photo or a CSS tweak shows up on the next reload
 # instead of days later. Costs a little speed, saves a lot of confusion.
 #
-# Three.js lives at /vendor/, NOT /js/vendor/, and that placement is load
-# bearing. Cloudflare applies every matching rule and concatenates them rather
-# than picking the most specific, so `/js/*` and `/js/vendor/*` would both hit
-# the Three.js files and emit two conflicting max-age values. Keeping the
-# vendored library outside /js/ lets one wildcard cover every script we write —
-# including ones added later, which is how camera3d.js ended up with no rule at
-# all and served two different versions from the edge at the same time.
+# Note if you ever add a vendored library: Cloudflare applies EVERY matching
+# rule and concatenates them rather than picking the most specific, so nesting
+# a folder under /js/ would give its files two conflicting max-age values.
+# Keep third-party code outside /js/.
 
 /photos/*
   Cache-Control: public, max-age=300, must-revalidate
@@ -54,10 +51,6 @@
 
 /js/*
   Cache-Control: public, max-age=300, must-revalidate
-
-# A pinned version that never changes — cache it hard.
-/vendor/*
-  Cache-Control: public, max-age=31536000, immutable
 
 
 # ── At launch ────────────────────────────────────────────────
