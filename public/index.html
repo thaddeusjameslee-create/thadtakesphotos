@@ -27,8 +27,8 @@
      alive, so the page is never blank for a crawler or a no-script browser. -->
 <script>document.documentElement.classList.add("js");</script>
 
-<!-- Still missing "areaServed" (your city/region) and "priceRange" — those are
-     what feed "senior photographer near me" results. Don't guess at them. -->
+<!-- Still missing "areaServed" (your city/region) — that's what feeds
+     "senior photographer near me" results. Don't guess at it. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -36,6 +36,7 @@
   "name": "Thad Takes Photos",
   "description": "Senior portrait photography.",
   "url": "https://thadtakesphotos.com",
+  "priceRange": "$100",
   "sameAs": ["https://instagram.com/thadtakesphotos"]
 }
 </script>
@@ -49,6 +50,7 @@
     <a class="nav__brand" href="#top">thad<span>takes</span>photos</a>
     <nav class="nav__links" aria-label="Main">
       <a href="#work">Work</a>
+      <a href="#faq">FAQ</a>
     </nav>
     <!-- Sits outside nav__links so it stays visible on mobile, where the text
          links collapse into the menu. Inline SVG rather than an icon font: no
@@ -69,6 +71,7 @@
   </div>
   <nav class="nav__mobile" id="nav-mobile" aria-label="Mobile" hidden>
     <a href="#work">Work</a>
+    <a href="#faq">FAQ</a>
   </nav>
 </header>
 
@@ -94,6 +97,72 @@
     <!-- Built from the PHOTOS list at the top of js/main.js. Add a file to
          public/photos/ and a line to that list — see PHOTOS.md. -->
     <div class="gallery" id="gallery"></div>
+  </section>
+
+  <!-- ── FAQ ────────────────────────────────────────────── -->
+  <!-- Plain <details>, no JavaScript. They open on click, on Enter, and on
+       Ctrl/Cmd+F when the browser searches inside a closed one — an accordion
+       built from divs and a click handler gets none of that for free, and
+       breaks entirely if the script fails to load. -->
+  <section class="section" id="faq">
+    <div class="section__head reveal">
+      <p class="eyebrow">Questions</p>
+      <h2>Good to know</h2>
+    </div>
+    <div class="faq">
+      <details class="reveal" open>
+        <summary>How much does it cost?</summary>
+        <p>$100 flat.</p>
+      </details>
+      <details class="reveal">
+        <summary>How long is a session?</summary>
+        <p>About an hour.</p>
+      </details>
+      <details class="reveal">
+        <summary>How many photos do I get?</summary>
+        <p>20 edited, full-resolution digital photos.</p>
+      </details>
+      <details class="reveal">
+        <summary>When do we shoot?</summary>
+        <p>Golden hour — sunrise or sunset, when the light is best.</p>
+      </details>
+      <details class="reveal">
+        <summary>Where do we shoot?</summary>
+        <p>I've got spots I like, or we can use somewhere that means something to you.</p>
+      </details>
+      <details class="reveal">
+        <summary>What if it rains?</summary>
+        <p>Not a problem. We'll reschedule.</p>
+      </details>
+      <details class="reveal">
+        <summary>Can I change outfits?</summary>
+        <p>An hour is definitely enough time for a quick outfit change.</p>
+      </details>
+      <details class="reveal">
+        <summary>Can I bring props, like my instrument?</summary>
+        <p>Of course.</p>
+      </details>
+      <details class="reveal">
+        <summary>Can my parents come?</summary>
+        <p>Yeah, parents are welcome.</p>
+      </details>
+      <details class="reveal">
+        <summary>How long do I have to wait?</summary>
+        <p>I'll have them to you within a week of the shoot.</p>
+      </details>
+      <details class="reveal">
+        <summary>How much editing do you do?</summary>
+        <p>Color, light, and light skin cleanup. No reshaping.</p>
+      </details>
+      <details class="reveal">
+        <summary>How do I pay?</summary>
+        <p>I take cash, Zelle, or Venmo.</p>
+      </details>
+      <details class="reveal">
+        <summary>How do I book?</summary>
+        <p><a href="#contact">Send me a message</a> and we'll pick a place, date, and time.</p>
+      </details>
+    </div>
   </section>
 
 
@@ -146,6 +215,7 @@
     <a class="nav__brand" href="#top">thad<span>takes</span>photos</a>
     <nav aria-label="Footer">
       <a href="#work">Work</a>
+      <a href="#faq">FAQ</a>
       <a href="#contact">Get in touch</a>
       <a href="https://instagram.com/thadtakesphotos" rel="me noopener" target="_blank">Instagram</a>
     </nav>
