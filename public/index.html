@@ -27,16 +27,25 @@
      alive, so the page is never blank for a crawler or a no-script browser. -->
 <script>document.documentElement.classList.add("js");</script>
 
-<!-- Still missing "areaServed" (your city/region) — that's what feeds
-     "senior photographer near me" results. Don't guess at it. -->
+<!-- What search engines read to place you geographically. "areaServed" is a
+     service area, not an address — no street or postcode goes in here, which
+     is deliberate: the published address came out of this site on purpose. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
   "name": "Thad Takes Photos",
-  "description": "Senior portrait photography.",
+  "description": "Senior portrait photography in Littleton, Colorado.",
   "url": "https://thadtakesphotos.com",
   "priceRange": "$100",
+  "areaServed": {
+    "@type": "City",
+    "name": "Littleton",
+    "containedInPlace": {
+      "@type": "AdministrativeArea",
+      "name": "Colorado"
+    }
+  },
   "sameAs": ["https://instagram.com/thadtakesphotos"]
 }
 </script>
