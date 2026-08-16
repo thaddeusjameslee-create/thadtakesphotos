@@ -294,6 +294,44 @@ em { font-style: italic; }
   color: rgba(237,230,218,.32);
 }
 
+/* ── FAQ ─────────────────────────────────────────────────── */
+
+/* The rows are capped rather than the wrapper, so they stay left-aligned with
+   the section heading at every width — capping .faq itself would let the
+   auto margins from `.section > *` centre the whole column away from it. */
+.faq details { max-width: 46rem; border-bottom: 1px solid var(--line); }
+
+.faq summary {
+  cursor: pointer;
+  padding: 1.15rem 2.5rem 1.15rem 0;
+  position: relative;
+  font-family: var(--display);
+  font-size: clamp(1.1rem, 2.2vw, 1.25rem);
+  transition: color .25s var(--ease);
+  /* Both are needed: `list-style` covers Firefox and Chrome, the
+     ::-webkit- rule below covers Safari, which still ignores it. */
+  list-style: none;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary:hover { color: var(--ochre-lit); }
+.faq summary:focus-visible { outline: 2px solid var(--ochre); outline-offset: 3px; }
+
+/* The +/× marker. Drawn as text so it inherits the row's colour and needs
+   no extra element in the markup. */
+.faq summary::after {
+  content: "+";
+  position: absolute; right: .25rem; top: 50%;
+  font-family: var(--sans); font-size: 1.5rem; line-height: 1;
+  color: var(--ochre);
+  transform: translateY(-50%);
+  transition: transform .3s var(--ease);
+}
+.faq details[open] summary::after { transform: translateY(-50%) rotate(45deg); }
+
+.faq p { margin: 0 0 1.35rem; color: var(--muted); max-width: 60ch; }
+.faq p a { color: var(--ochre); text-decoration: none; border-bottom: 1px solid rgba(214,154,70,.4); }
+.faq p a:hover { color: var(--ochre-lit); border-color: var(--ochre-lit); }
+
 /* ── Book / form ─────────────────────────────────────────── */
 .section--book { background: var(--bg-soft); color: var(--text); }
 .book { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(2rem, 6vw, 5rem); align-items: start; }
