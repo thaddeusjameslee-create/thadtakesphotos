@@ -236,6 +236,9 @@ em { font-style: italic; }
 .section--alt { background: var(--bg-soft); }
 .section__head { margin-bottom: 1.5rem; }
 .section__head h2 { margin-bottom: .5rem; }
+/* For heads sitting above a solid block — a photo, a slab of copy — rather
+   than above a grid of images that already carries its own white space. */
+.section__head--spaced { margin-bottom: clamp(2.25rem, 4vw, 3.25rem); }
 
 /* ── Gallery ─────────────────────────────────────────────── */
 
