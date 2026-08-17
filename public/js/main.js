@@ -6,22 +6,28 @@
    THE GALLERY LIST  ← the part you edit most often.
    Drop a file in public/photos/, add a line here, done.
      src   : path to the file
-     alt   : what's in the photo — read aloud by screen readers and
-             shown under the lightbox, so describe it properly
+     alt   : what's in the photo. Never displayed — it's what a screen
+             reader announces and what a search engine indexes, so
+             describe it properly even though no visitor sees it.
      ratio : height ÷ width as a percent. 150 is a 2:3 portrait
              straight out of the camera, 125 is a 4:5 crop, 100 is
              square. It reserves the right amount of space before the
              image loads, which is what stops the page jumping around.
+
+   Order is running order on the page, strongest first — visitors
+   judge a photographer by the first two frames and many never scroll
+   past them. The ratios are deliberately interleaved so the masonry
+   grid doesn't stack three tall frames down one column.
 ------------------------------------------------------------ */
 const PHOTOS = [
-  { src: "photos/portrait-04.jpg", alt: "Senior in a black dress standing waist-deep in golden summer grass, green foothills rising behind her",  ratio: 66 },
-  { src: "photos/portrait-01.jpg", alt: "Senior in a black dress standing in tall grass below the foothills, backlit by low evening sun",         ratio: 150 },
-  { src: "photos/portrait-06.jpg", alt: "Senior seated in a meadow holding a violin and bow, red rock hogbacks lit gold behind her",              ratio: 66 },
   { src: "photos/portrait-02.jpg", alt: "Senior seated in dry grass, red sandstone ridges catching the last light in the distance",               ratio: 150 },
-  { src: "photos/portrait-08.jpg", alt: "Close portrait of a senior raising a violin bow to the strings, red rock cliffs soft behind",            ratio: 66 },
-  { src: "photos/portrait-05.jpg", alt: "Senior seated in a summer meadow beneath a cottonwood, hillside and open sky behind",                    ratio: 125 },
-  { src: "photos/portrait-07.jpg", alt: "Senior seen from behind in a lace-back black dress, looking out across the meadow toward the red rocks",  ratio: 66 },
+  { src: "photos/portrait-06.jpg", alt: "Senior seated in a meadow holding a violin and bow, red rock hogbacks lit gold behind her",              ratio: 66 },
   { src: "photos/portrait-03.jpg", alt: "Senior holding a pink rose, open grassland and sandstone hills stretching out behind",                   ratio: 150 },
+  { src: "photos/portrait-05.jpg", alt: "Senior seated in a summer meadow beneath a cottonwood, hillside and open sky behind",                    ratio: 125 },
+  { src: "photos/portrait-08.jpg", alt: "Close portrait of a senior raising a violin bow to the strings, red rock cliffs soft behind",            ratio: 66 },
+  { src: "photos/portrait-07.jpg", alt: "Senior seen from behind in a lace-back black dress, looking out across the meadow toward the red rocks",  ratio: 66 },
+  { src: "photos/portrait-01.jpg", alt: "Senior in a black dress standing in tall grass below the foothills, backlit by low evening sun",         ratio: 150 },
+  { src: "photos/portrait-04.jpg", alt: "Senior in a black dress standing waist-deep in golden summer grass, green foothills rising behind her",  ratio: 66 },
 ];
 
 const $  = (sel, root = document) => root.querySelector(sel);
@@ -51,11 +57,7 @@ PHOTOS.forEach((photo, i) => {
     tile.classList.add("tile--empty");
   });
 
-  const label = document.createElement("span");
-  label.className = "tile__label";
-  label.textContent = photo.alt;
-
-  tile.append(img, label);
+  tile.append(img);
   tile.addEventListener("click", () => openLightbox(i));
   gallery.append(tile);
 });
@@ -71,7 +73,6 @@ if (PHOTOS.length === 0) {
 /* ── Lightbox ────────────────────────────────────────────── */
 const lightbox = $("#lightbox");
 const lbImg    = $("#lightbox-img");
-const lbCap    = $("#lightbox-cap");
 let lbIndex = 0;
 let lastFocused = null;
 
@@ -85,7 +86,6 @@ function showPhoto(index) {
   lbIndex = index;
   lbImg.src = photo.src;
   lbImg.alt = photo.alt;
-  lbCap.textContent = photo.alt;
 }
 
 function openLightbox(index) {
