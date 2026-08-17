@@ -10,7 +10,7 @@ Filenames the site is looking for:
 | File | Where it shows up |
 |------|-------------------|
 | `hero.jpg` | Full-screen background image at the very top. Use a wide, horizontal shot with empty space on the **left** — the headline sits there. |
-| `about.jpg` | Vertical photo of you in the About section (4:5 works best). |
+| `about.jpg` | Photo of you in the About section, currently a square head-and-shoulders crop. Any shape works — it's shown at whatever shape the file is, never cropped by the CSS. If you swap it for a differently-shaped file, update the `width`/`height` on that `<img>` in `index.html` to match, or the page will jump as it loads. |
 | `og.jpg` | The thumbnail that appears when someone texts or posts the link. 1200×630, horizontal. |
 | `01.jpg`, `02.jpg`, … | The gallery. As many as you list in `PHOTOS`. |
 | `portrait-01.jpg` … `portrait-03.jpg` | The three panels orbiting the camera near the top. **Vertical crops** — they're shown at roughly 5:7, so a landscape shot gets cut badly. Right now they're generated placeholders; drop real files at these names and they appear with no code change. |

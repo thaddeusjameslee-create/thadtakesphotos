@@ -236,6 +236,9 @@ em { font-style: italic; }
 .section--alt { background: var(--bg-soft); }
 .section__head { margin-bottom: 1.5rem; }
 .section__head h2 { margin-bottom: .5rem; }
+/* For heads sitting above a solid block — a photo, a slab of copy — rather
+   than above a grid of images that already carries its own white space. */
+.section__head--spaced { margin-bottom: clamp(2.25rem, 4vw, 3.25rem); }
 
 /* ── Gallery ─────────────────────────────────────────────── */
 
@@ -283,6 +286,34 @@ em { font-style: italic; }
   font: 500 .72rem var(--sans); letter-spacing: .08em; text-transform: uppercase;
   color: rgba(237,230,218,.32);
 }
+
+/* ── About ───────────────────────────────────────────────── */
+
+/* The photo column is capped in rem rather than set as a fraction, so a wide
+   screen grows the text column and leaves the portrait at a sane size — the
+   other way round gives you a two-foot-tall headshot on a desktop monitor. */
+.about {
+  display: grid;
+  grid-template-columns: minmax(0, 19rem) 1fr;
+  gap: clamp(1.75rem, 5vw, 4rem);
+  align-items: center;
+}
+@media (max-width: 760px) { .about { grid-template-columns: 1fr; max-width: 28rem; } }
+
+/* No fixed aspect-ratio and no object-fit on purpose: the photo keeps whatever
+   shape the file has, so replacing about.jpg with a different crop can't
+   silently cut the top of someone's head off. The width/height attributes in
+   the HTML are what reserve the space — update those to match if you swap the
+   file for one of a different shape. */
+.about__photo { width: 100%; height: auto; border-radius: var(--r); }
+
+.about__body p {
+  color: var(--muted);
+  max-width: 58ch;
+  font-size: 1.05rem;
+  margin: 0 0 1.1rem;
+}
+.about__body p:last-child { margin-bottom: 0; }
 
 /* ── FAQ ─────────────────────────────────────────────────── */
 

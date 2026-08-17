@@ -14,16 +14,15 @@
              square. It reserves the right amount of space before the
              image loads, which is what stops the page jumping around.
 
-   Order is running order on the page, strongest first — visitors
-   judge a photographer by the first two frames and many never scroll
-   past them. The ratios are deliberately interleaved so the masonry
-   grid doesn't stack three tall frames down one column.
+   Order here is running order on the page. The ratios are deliberately
+   interleaved so the masonry grid doesn't stack three tall frames down
+   one column.
 ------------------------------------------------------------ */
 const PHOTOS = [
-  { src: "photos/portrait-02.jpg", alt: "Senior seated in dry grass, red sandstone ridges catching the last light in the distance",               ratio: 150 },
   { src: "photos/portrait-06.jpg", alt: "Senior seated in a meadow holding a violin and bow, red rock hogbacks lit gold behind her",              ratio: 66 },
   { src: "photos/portrait-03.jpg", alt: "Senior holding a pink rose, open grassland and sandstone hills stretching out behind",                   ratio: 150 },
   { src: "photos/portrait-05.jpg", alt: "Senior seated in a summer meadow beneath a cottonwood, hillside and open sky behind",                    ratio: 125 },
+  { src: "photos/portrait-02.jpg", alt: "Senior seated in dry grass, red sandstone ridges catching the last light in the distance",               ratio: 150 },
   { src: "photos/portrait-08.jpg", alt: "Close portrait of a senior raising a violin bow to the strings, red rock cliffs soft behind",            ratio: 66 },
   { src: "photos/portrait-07.jpg", alt: "Senior seen from behind in a lace-back black dress, looking out across the meadow toward the red rocks",  ratio: 66 },
   { src: "photos/portrait-01.jpg", alt: "Senior in a black dress standing in tall grass below the foothills, backlit by low evening sun",         ratio: 150 },
