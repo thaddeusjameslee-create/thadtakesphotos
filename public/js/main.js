@@ -23,10 +23,15 @@ const PHOTOS = [
   { src: "photos/portrait-03.jpg", alt: "Senior holding a pink rose, open grassland and sandstone hills stretching out behind",                   ratio: 150 },
   { src: "photos/portrait-05.jpg", alt: "Senior seated in a summer meadow beneath a cottonwood, hillside and open sky behind",                    ratio: 125 },
   { src: "photos/portrait-02.jpg", alt: "Senior seated in dry grass, red sandstone ridges catching the last light in the distance",               ratio: 150 },
+  { src: "photos/portrait-10.jpg", alt: "Senior sitting cross-legged in tall grass, red rock formations along the ridge behind him",              ratio: 66 },
+  { src: "photos/portrait-09.jpg", alt: "Close portrait of a senior in a plaid flannel, hair caught by the wind, storm sky behind",               ratio: 150 },
   { src: "photos/portrait-08.jpg", alt: "Close portrait of a senior raising a violin bow to the strings, red rock cliffs soft behind",            ratio: 66 },
-  { src: "photos/portrait-07.jpg", alt: "Senior seen from behind in a lace-back black dress, looking out across the meadow toward the red rocks",  ratio: 66 },
+  { src: "photos/portrait-11.jpg", alt: "Senior crouched under a cottonwood, low sun scattering through the leaves behind him",                   ratio: 150 },
+  { src: "photos/portrait-07.jpg", alt: "Senior seen from behind in a lace-back black dress, looking out across the meadow toward the red rocks", ratio: 66 },
+  { src: "photos/portrait-13.jpg", alt: "Senior in a plaid flannel, red rocks rising out of the meadow behind him",                               ratio: 66 },
   { src: "photos/portrait-01.jpg", alt: "Senior in a black dress standing in tall grass below the foothills, backlit by low evening sun",         ratio: 150 },
   { src: "photos/portrait-04.jpg", alt: "Senior in a black dress standing waist-deep in golden summer grass, green foothills rising behind her",  ratio: 66 },
+  { src: "photos/portrait-12.jpg", alt: "Senior crouched in a meadow, green grass framing the foreground and cloud stacked over the hills",       ratio: 150 },
 ];
 
 const $  = (sel, root = document) => root.querySelector(sel);
